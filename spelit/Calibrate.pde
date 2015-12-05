@@ -6,23 +6,36 @@
 
 boolean calibrationDone = false;
 
-int calibrationState = 0;   // 0 = polling cameras
-                            // 1 = selecting collision camera
-                            // 2 = selecting top camera
-                            // 3 = calibrating collision camera
-                            // 4 = calibrating top camera
-                            // 5 = done
+int calibrationState = 0;   
+/* 
+0 = polling cameras
+1 = selecting collision camera
+2 = selecting top camera
+3 = calibrating collision camera
+4 = calibrating top camera
+5 = done
+*/
 
 ArrayList<Capture> finalCaptures = new ArrayList<Capture>();
 int calibrateCameraIndex = 0;
+int calibratePinIndex = 1;
+int[] calibratePinLocation = {0, 0}; //this is updated from the input of camera
+
+boolean calibratePinManual = false;
+int[] calibratePinManualLocation = {0, 0}; //mouse x/y is stored here when clicked
 
 // Use this as a regular draw until calibration is complete
 void calibrateDraw() {
     background(75);
 
+    if (calibratePinIndex > pinCount) {
+        calibrationState = 5;
+    }
+
     if (calibrationState == 0) {
         finalCaptures = getCameras();
         calibrationState = 1;
+
     } else if (calibrationState == 1) {
         if (finalCaptures.get(calibrateCameraIndex).available()) {
             finalCaptures.get(calibrateCameraIndex).read();
@@ -31,7 +44,8 @@ void calibrateDraw() {
         fill(255);
         stroke(0);
         textSize(24);
-        text("Collision camera - y/n?", 50, 100);
+        text("Collision camera - y/n?", 20, 50);
+
     } else if (calibrationState == 2) {
         if (finalCaptures.get(calibrateCameraIndex).available()) {
             finalCaptures.get(calibrateCameraIndex).read();
@@ -40,13 +54,71 @@ void calibrateDraw() {
         fill(255);
         stroke(0);
         textSize(24);
-        text("Top camera - y/n?", 50, 100);
+        text("Top camera - y/n?", 20, 50);
+
+    } else if (calibrationState == 3) {
+        //col camera pin calibration
+        if (colCam.camera.available()) {
+            colCam.camera.read();
+        }
+        image(colCam.camera, 0, 0, width, height);
+
+        fill(255);
+        stroke(0);
+        textSize(24);
+        text("Top camera - Pin " + Integer.toString(calibratePinIndex) + " - y/n?", 20, 50);
+        if (calibratePinManual) {
+            textSize(18);
+            text("Manual calibration: click on the center of the pin and press y", 20, 80);
+        }
+    } else if (calibrationState == 4) {
+        //front camera pin calibration
+        if (frontCam.camera.available()) {
+            frontCam.camera.read();
+        }
+        image(frontCam.camera, 0, 0, width, height);
+
+        fill(255);
+        stroke(0);
+        textSize(24);
+        text("Front camera - Pin " + Integer.toString(calibratePinIndex) + " - y/n?", 20, 50);
+        if (calibratePinManual) {
+            textSize(18);
+            text("Manual calibration: click on the center of the pin and press y", 20, 80);
+        }
+    } else if (calibrationState == 5) {
+        println("calibration done");
+        programState = GlobalState.Setup;
+    }
+
+    //analyse camera input for blobs
+    //analyseCamera will update calibrationPinLocation array
+    if (calibrationState == 3) {
+        analyseCamera(colCam.camera);
+    } else if (calibrationState == 4) {
+        analyseCamera(frontCam.camera);
+    }
+
+    //common to 3 and 4
+    if (calibrationState == 3 || calibrationState == 4) {
+        //draw lines indicating current pin location
+        int x, y;
+        if (calibratePinManual) {
+            x = calibratePinManualLocation[0];
+            y = calibratePinManualLocation[1];
+        } else {
+            x = calibratePinLocation[0];
+            y = calibratePinLocation[1];
+        }
+        stroke(0, 255, 0);
+        line(0, y, width, y);
+        line(x, 0, x, height);
     }
     //TODO
     
-    fill(255);
-    textSize(12);
-    text("Calibrating cameras", 24, 24);
+    //fill(255);
+    //textSize(12);
+    //text("Calibrating cameras", 24, 24);
 }
 
 ArrayList<Capture> getCameras() {
@@ -58,7 +130,7 @@ ArrayList<Capture> getCameras() {
         println("There are no cameras available for capture.");
         exit();
     } else {
-        
+
         for (int i = 0; i < cameras.length; i++) {
             println(cameras[i]);
             /*if (cameras[i].split(",").length != 3) {
@@ -149,5 +221,32 @@ class CameraResult {
 
     int getRes() {
         return camWidth * camHeight;
+    }
+}
+
+
+
+
+void analyseCamera(Capture camera) {
+
+}
+
+
+void savePinLocation() {
+    //Variables used:
+    //calibrationState
+    //calibratePinManual
+    if (calibratePinManual) {
+        if (calibrationState == 3) { // colCam
+            colCam.pinLocations.add(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1]));
+        } else if (calibrationState == 4) { // frontCam
+            frontCam.pinLocations.add(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1]));
+        }
+    } else {
+        if (calibrationState == 3) { // colCam
+            colCam.pinLocations.add(new PVector(calibratePinLocation[0], calibratePinLocation[1]));
+        } else if (calibrationState == 4) { // frontCam
+            frontCam.pinLocations.add(new PVector(calibratePinLocation[0], calibratePinLocation[1]));
+        }
     }
 }

@@ -27,6 +27,16 @@ void keyPressed() {
                     calibrationState++;
 
                     calibrateCameraIndex = (calibrateCameraIndex + 1) % 2; //defaults to the other camera for the next one
+                } else if (calibrationState == 3 || calibrationState == 4) { // save pin location
+                    savePinLocation();
+                    if (calibrationState == 4) {
+                        calibratePinIndex += 1;
+                        calibrationState = 3;
+                    } else {
+                        calibrationState = 4;
+                    }
+                    calibratePinManual = false;
+                    
                 }
             }
             break;
@@ -35,7 +45,18 @@ void keyPressed() {
                 if (calibrationState == 1 || calibrationState == 2) { //switches the camera
                     println("switched cameras");
                     calibrateCameraIndex = (calibrateCameraIndex + 1) % 2;
+                } else if (calibrationState == 3 || calibrationState == 4) { //set manual calibration of a pin true
+                    calibratePinManual = true;
                 }
             }
+    }
+}
+
+void mousePressed() {
+    if (programState == GlobalState.Calibrating) {
+        if (calibrationState == 3 || calibrationState == 4) {
+            calibratePinManualLocation[0] = mouseX;
+            calibratePinManualLocation[1] = mouseY;
+        }
     }
 }

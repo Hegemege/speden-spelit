@@ -1,6 +1,7 @@
 // Imports
 import processing.video.*;
 import java.util.*;
+import blobDetection.*;
 
 // Global variables
 CollisionCamera colCam;
@@ -10,6 +11,7 @@ Game game;
 GlobalState programState;
 
 boolean debug = true;
+int pinCount = 5;
 
 
 // Main functions
