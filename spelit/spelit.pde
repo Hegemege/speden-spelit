@@ -11,6 +11,7 @@ Game game;
 GlobalState programState;
 
 boolean debug = true;
+boolean skipPinCalibration = false;
 int pinCount = 5;
 
 

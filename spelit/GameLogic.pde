@@ -25,6 +25,12 @@ class Game {
     // Main draw loop for the game
     void draw() {
         background(75);
+
+
+
+        colCam.draw();
+        colCam.detectCollision();
+
         fill(255);
         textSize(24);
         text("Playing...", 50, 50);
@@ -43,4 +49,19 @@ class Player {
     }
 
     // Methods
+}
+
+class Pin {
+    PVector location;
+    boolean hit;
+
+    Pin(int x, int y) {
+        location = new PVector(x, y);
+        hit = false;
+    }
+
+    Pin(PVector loc) {
+        location = loc;
+        hit = false;
+    }
 }

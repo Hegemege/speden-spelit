@@ -1,4 +1,5 @@
 // Pelaajien määrän ja nimien valitseminen tänne
+// Game-luokalle annetaan ArrayList<String>, josta pelaaja-oliot luodaan
 
 boolean setupDone = false;
 

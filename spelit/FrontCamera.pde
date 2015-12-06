@@ -14,4 +14,15 @@ class FrontCamera {
     }
 
     //Methods
+    void draw() {
+        if (camera.available()) {
+            camera.read();
+        }
+        image(camera, 0, 0, width, height);
+
+        //Draw other stuff on top of the feed
+
+        //Draw the pins
+        //TODO
+    }
 }

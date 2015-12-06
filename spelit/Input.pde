@@ -49,6 +49,7 @@ void keyPressed() {
                     calibratePinManual = true;
                 }
             }
+            break;
     }
 }
 

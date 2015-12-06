@@ -9,10 +9,10 @@ boolean calibrationDone = false;
 int calibrationState = 0;   
 /* 
 0 = polling cameras
-1 = selecting collision camera
-2 = selecting top camera
-3 = calibrating collision camera
-4 = calibrating top camera
+1 = selecting Collision camera
+2 = selecting front camera
+3 = calibrating Collision camera
+4 = calibrating front camera
 5 = done
 */
 
@@ -23,6 +23,10 @@ int[] calibratePinLocation = {0, 0}; //this is updated from the input of camera
 
 boolean calibratePinManual = false;
 int[] calibratePinManualLocation = {0, 0}; //mouse x/y is stored here when clicked
+
+//Blob detection
+PImage calibrateImg = new PImage(200, 150);
+BlobDetection calibrateBlobDetection = new BlobDetection(calibrateImg.width, calibrateImg.height);
 
 // Use this as a regular draw until calibration is complete
 void calibrateDraw() {
@@ -35,6 +39,11 @@ void calibrateDraw() {
     if (calibrationState == 0) {
         finalCaptures = getCameras();
         calibrationState = 1;
+
+        //Setup blob detection
+        calibrateBlobDetection.setPosDiscrimination(true);
+        calibrateBlobDetection.setConstants(2, 4000, 500); //default values 1000, 4000, 500
+        calibrateBlobDetection.setThreshold(0.8f); 
 
     } else if (calibrationState == 1) {
         if (finalCaptures.get(calibrateCameraIndex).available()) {
@@ -54,19 +63,32 @@ void calibrateDraw() {
         fill(255);
         stroke(0);
         textSize(24);
-        text("Top camera - y/n?", 20, 50);
+        text("Front camera - y/n?", 20, 50);
 
     } else if (calibrationState == 3) {
+
+        if (skipPinCalibration) { //skip pin calibration - use hardcoded values
+            for (int i = 0; i < pinCount; i++) {
+                PVector loc = new PVector(100 + 50*i, 100);
+                colCam.pinLocations.add(loc);
+                PVector floc = new PVector(100 + 50*i, height - 100);
+                frontCam.pinLocations.add(floc);
+            }
+            calibrationState = 5;
+            return;
+        }
+
         //col camera pin calibration
         if (colCam.camera.available()) {
             colCam.camera.read();
+            calibrateComputeBlobs(colCam.camera);
         }
         image(colCam.camera, 0, 0, width, height);
 
         fill(255);
         stroke(0);
         textSize(24);
-        text("Top camera - Pin " + Integer.toString(calibratePinIndex) + " - y/n?", 20, 50);
+        text("Collision camera - Pin " + Integer.toString(calibratePinIndex) + " - y/n?", 20, 50);
         if (calibratePinManual) {
             textSize(18);
             text("Manual calibration: click on the center of the pin and press y", 20, 80);
@@ -75,6 +97,7 @@ void calibrateDraw() {
         //front camera pin calibration
         if (frontCam.camera.available()) {
             frontCam.camera.read();
+            calibrateComputeBlobs(frontCam.camera);
         }
         image(frontCam.camera, 0, 0, width, height);
 
@@ -91,16 +114,11 @@ void calibrateDraw() {
         programState = GlobalState.Setup;
     }
 
-    //analyse camera input for blobs
-    //analyseCamera will update calibrationPinLocation array
-    if (calibrationState == 3) {
-        analyseCamera(colCam.camera);
-    } else if (calibrationState == 4) {
-        analyseCamera(frontCam.camera);
-    }
-
     //common to 3 and 4
     if (calibrationState == 3 || calibrationState == 4) {
+        //analyse camera input for blobs
+        //analyseCamera will update calibrationPinLocation array
+        analyseCamera();
         //draw lines indicating current pin location
         int x, y;
         if (calibratePinManual) {
@@ -132,10 +150,6 @@ ArrayList<Capture> getCameras() {
     } else {
 
         for (int i = 0; i < cameras.length; i++) {
-            println(cameras[i]);
-            /*if (cameras[i].split(",").length != 3) {
-                continue;
-            }*/
             camResults.add( new CameraResult(cameras[i]) );
         }
     }
@@ -224,18 +238,39 @@ class CameraResult {
     }
 }
 
+void analyseCamera() {
+    Blob bigBlob = null;
+    for (int n = 0; n < calibrateBlobDetection.getBlobNb(); n++) {
+        Blob b = calibrateBlobDetection.getBlob(n);
+        if (b != null) {
+            if (debug) {
+                ellipseMode(CORNER);
+                strokeWeight(1); //For debugging purposes
+                fill(0,0,0,0);
+                stroke(0,0,255); 
+                ellipse(
+                b.xMin*width,b.yMin*height,
+                b.w*width,b.h*height
+                );
+            }
 
+            //TODO: tähän blobin sanity checkausta, esim jättimäiset blobit voi skipata
 
-
-void analyseCamera(Capture camera) {
-
+            //valitaan isoin blobi keilaksi
+            if (bigBlob == null) {
+                bigBlob = b;
+            } else if (b.w*b.h > bigBlob.w*bigBlob.h) {
+                bigBlob = b;
+            }
+        }
+    }
+    if (bigBlob != null) {
+        calibratePinLocation[0] = Math.round(bigBlob.xMin*width + bigBlob.w*width/2);
+        calibratePinLocation[1] = Math.round(bigBlob.yMin*height + bigBlob.h*height/2);
+    }
 }
 
-
 void savePinLocation() {
-    //Variables used:
-    //calibrationState
-    //calibratePinManual
     if (calibratePinManual) {
         if (calibrationState == 3) { // colCam
             colCam.pinLocations.add(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1]));
@@ -249,4 +284,11 @@ void savePinLocation() {
             frontCam.pinLocations.add(new PVector(calibratePinLocation[0], calibratePinLocation[1]));
         }
     }
+}
+
+void calibrateComputeBlobs(Capture camera) {
+    calibrateImg.copy(camera, 0, 0, camera.width, camera.height, 
+     0, 0, calibrateImg.width, calibrateImg.height);
+    fastblur(calibrateImg, 2);
+    calibrateBlobDetection.computeBlobs(calibrateImg.pixels);
 }
