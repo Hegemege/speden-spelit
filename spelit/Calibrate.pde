@@ -71,6 +71,7 @@ void calibrateDraw() {
             for (int i = 0; i < pinCount; i++) {
                 PVector loc = new PVector(100 + 50*i, 100);
                 colCam.pinLocations.add(loc);
+                pins.add(new Pin(loc));
                 PVector floc = new PVector(100 + 50*i, height - 100);
                 frontCam.pinLocations.add(floc);
             }
@@ -150,7 +151,9 @@ ArrayList<Capture> getCameras() {
     } else {
 
         for (int i = 0; i < cameras.length; i++) {
+          if(!cameras[i].contains("USB")) {
             camResults.add( new CameraResult(cameras[i]) );
+          }
         }
     }
 
@@ -175,7 +178,7 @@ ArrayList<Capture> getCameras() {
     //Pick top resolution camera from both candidate lists
 
     CameraResult top1 = candidates_cam1.get(0);
-    CameraResult top2 = candidates_cam1.get(0); // TODO: REPLACE WITH CAM2 WHEN USING TWO CAMERAS
+    CameraResult top2 = candidates_cam2.get(0); // TODO: REPLACE WITH CAM2 WHEN USING TWO CAMERAS
 
     for (int i = 0; i < candidates_cam1.size(); i++) {
         if (candidates_cam1.get(i).getRes() > top1.getRes()) {
@@ -184,7 +187,7 @@ ArrayList<Capture> getCameras() {
     }
 
     //TODO: REMOVE COMMENT WHEN USING TWO CAMERAS
-    /*for (int i = 0; i < candidates_cam2.size(); i++) {
+    for (int i = 0; i < candidates_cam2.size(); i++) {
         if (candidates_cam2.get(i).getRes() > top2.getRes()) {
             top2 = candidates_cam2.get(i);
         }
@@ -192,10 +195,10 @@ ArrayList<Capture> getCameras() {
 
     println("Chose two cameras:");
     println(top1.rawstr);
-    println(top2.rawstr);*/
+    println(top2.rawstr);
 
     Capture cap1 = new Capture(this, top1.rawstr);
-    Capture cap2 = new Capture(this, top1.rawstr); // TODO: REPLACE WITH TOP2 WHEN USING TWO CAMERAS
+    Capture cap2 = new Capture(this, top2.rawstr); // TODO: REPLACE WITH TOP2 WHEN USING TWO CAMERAS
 
     cap1.start();
     cap2.start();

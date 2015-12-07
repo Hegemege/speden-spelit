@@ -4,6 +4,10 @@ class Game {
     // Fields
     ArrayList<Player>   players;
     int                 turn;
+    boolean             gamePaused; 
+    boolean             timeOver;
+    int                 seconds;
+    Timer               countdownTimer;
 
     // Constructor
     Game(ArrayList<String> playerNames) {
@@ -14,9 +18,34 @@ class Game {
         }
 
         turn = 0;
+        gamePaused = true;
+        timeOver = false;
+        seconds = 15;
     }
     
+    void startCountdownTimer() {
+      countdownTimer = new Timer();
+      countdownTimer.schedule(new TimerTask() {
+          @Override
+          public void run() {
+              if (seconds == 0) {
+                  timeOver = true;
+              } else if (!timeOver && !gamePaused) {
+                  seconds -= 1;
+              }
+          }
+        }, 1000, 1000);
+    }
+    
+    void playTurn() {
+        seconds = 15;
+        startCountdownTimer();
+    }
+    
+    
     void changeTurn() {
+      countdownTimer.cancel(); 
+      timeOver = false;
       turn = (turn + 1) % playerCount; 
       for (int i = 0; i < pins.size(); i++) {
         pins.get(i).hit = false;
@@ -35,14 +64,20 @@ class Game {
         
         Player p = getPlayerInTurn();
         colCam.draw();
-        int collisionIndex = colCam.detectCollision();
-        if (collisionIndex !=  - 1 && !pins.get(collisionIndex).hit) { 
-            p.points += 1;
-            pins.get(collisionIndex).hit = true;
+        if(!gamePaused && !timeOver) {
+            int collisionIndex = colCam.detectCollision();
+            if (collisionIndex !=  - 1 && !pins.get(collisionIndex).hit) { 
+                p.points += 1;
+                pins.get(collisionIndex).hit = true;
+            }
         }
         fill(255);
         textSize(24);
-        text("Current player: " + p.name + "   Points: " + p.points, 50, 50);
+        if (!gamePaused) {
+           text("Current player: " + p.name + "    Points: " + p.points + "    Time left: " + seconds, 50, 50);
+        } else {
+            text("Current player: " + p.name + "    Points: " + p.points, 50, 50);
+        }
     }
 }
 

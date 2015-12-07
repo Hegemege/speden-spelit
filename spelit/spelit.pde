@@ -2,7 +2,8 @@
 import processing.video.*;
 import java.util.*;
 import blobDetection.*;
-
+import java.util.Timer;
+import java.util.TimerTask;
 // Global variables
 CollisionCamera colCam;
 FrontCamera frontCam;
@@ -11,7 +12,7 @@ Game game;
 GlobalState programState;
 
 boolean debug = true;
-boolean skipPinCalibration = false;
+boolean skipPinCalibration = true;
 int pinCount = 5;
 ArrayList<String> tPlayers = new ArrayList<String>();
 ArrayList<Pin> pins = new ArrayList<Pin>();
