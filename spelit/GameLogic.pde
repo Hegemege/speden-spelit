@@ -15,7 +15,10 @@ class Game {
 
         turn = 0;
     }
-
+    
+    void changeTurn() {
+      turn = (turn + 1) % playerCount; 
+    }
 
     // Methods
     Player getPlayerInTurn() {
@@ -29,8 +32,12 @@ class Game {
 
 
         colCam.draw();
-        colCam.detectCollision();
-
+        int collision = colCam.detectCollision();
+        if (collision !=  -1) { // && isn't already hit or add that to collision detection
+            Player p = getPlayerInTurn();
+            p.points += 1;
+            //Do something to the pin, have to implement adding Pin objects to somewhere first to be able to use hit...
+        }
         fill(255);
         textSize(24);
         text("Playing...", 50, 50);

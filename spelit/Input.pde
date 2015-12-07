@@ -8,7 +8,6 @@ void keyPressed() {
     if (programState == GlobalState.Setup && playerCount != 0 && tPlayers.size() < playerCount) {
         if (keyCode == ENTER) {
             tPlayers.add(playerName);
-            System.out.println(playerName);
             playerName = "";
         } else if (keyCode == BACKSPACE) {
             playerName =  playerName.substring(0, max(playerName.length() - 1, 0));
@@ -22,6 +21,8 @@ void keyPressed() {
                 calibrationDone = true;
             } else if (programState == GlobalState.Setup) {
                 setupDone = true;
+            } else if (programState == GlobalState.Playing) {
+                game.changeTurn();
             }
             break;
         case 'y':
