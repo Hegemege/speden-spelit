@@ -10,7 +10,7 @@ void keyPressed() {
             tPlayers.add(playerName);
             playerName = "";
         } else if (keyCode == BACKSPACE) {
-            playerName =  playerName.substring(0, max(playerName.length() - 1, 0));
+            playerName = playerName.substring(0, max(playerName.length() - 1, 0));
         } else if (keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT) {
            playerName += key; 
         }
@@ -22,7 +22,14 @@ void keyPressed() {
             } else if (programState == GlobalState.Setup) {
                 setupDone = true;
             } else if (programState == GlobalState.Playing) {
-                game.changeTurn();
+                if (game.gamePaused) {
+                    game.gamePaused = false;
+                    game.playTurn();
+                } else {
+                    game.gamePaused = true;
+                    game.seconds = 15;
+                    game.changeTurn();
+                }
             }
             break;
         case 'y':

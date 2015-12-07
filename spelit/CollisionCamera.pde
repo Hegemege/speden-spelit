@@ -16,8 +16,8 @@ class CollisionCamera {
         img = new PImage(200, 150);
         blobDetection = new BlobDetection(img.width, img.height);
 
-        blobDetection.setPosDiscrimination(true);
-        blobDetection.setThreshold(0.8f); 
+        blobDetection.setPosDiscrimination(false);
+        blobDetection.setThreshold(0.2f); 
         blobDetection.setConstants(2, 4000, 500); //default values 1000, 4000, 500
 
         pinRadius = 30;
@@ -41,7 +41,6 @@ class CollisionCamera {
         // TODO draw blobs
         if (debug) {
             for (int i = 0; i < pinLocations.size(); i++) {
-               // PVector pin = pinLocations.get(i);
                if (!pins.get(i).hit) {
                    PVector pin = pinLocations.get(i);
                    ellipseMode(CENTER);
@@ -68,9 +67,9 @@ class CollisionCamera {
             if (b!=null) {
                 if (debug) {
                     ellipseMode(CORNER);
-                    strokeWeight(1); //For debugging purposes
+                    strokeWeight(10); //For debugging purposes
                     fill(0,0,0,0);
-                    stroke(0,0,255); 
+                    stroke(255,255,255); 
                     ellipse(
                     b.xMin*width,b.yMin*height,
                     b.w*width,b.h*height
