@@ -7,6 +7,7 @@ class Game {
     boolean             gamePaused; 
     boolean             timeOver;
     int                 seconds;
+    Timer               countdownTimer;
 
     // Constructor
     Game(ArrayList<String> playerNames) {
@@ -20,36 +21,30 @@ class Game {
         gamePaused = true;
         timeOver = false;
         seconds = 15;
-        initiliazeCountdownTimer();
     }
     
-    void initiliazeCountdownTimer() {
-      Timer countdownTimer = new Timer();
+    void startCountdownTimer() {
+      countdownTimer = new Timer();
       countdownTimer.schedule(new TimerTask() {
           @Override
           public void run() {
-              if (!timeOver && !gamePaused) {
+              if (seconds == 0) {
+                  timeOver = true;
+              } else if (!timeOver && !gamePaused) {
                   seconds -= 1;
               }
           }
-        }, 0, 1000);
+        }, 1000, 1000);
     }
     
     void playTurn() {
-        Timer turnTimer = new Timer();
-        turnTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                timeOver = true;
-            }
-        }, 15000);
-        if (timeOver) {
-            turnTimer.cancel();
-        }
+        seconds = 15;
+        startCountdownTimer();
     }
     
     
     void changeTurn() {
+      countdownTimer.cancel(); 
       timeOver = false;
       turn = (turn + 1) % playerCount; 
       for (int i = 0; i < pins.size(); i++) {
