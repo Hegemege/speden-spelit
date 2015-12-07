@@ -10,10 +10,11 @@ Game game;
 
 GlobalState programState;
 
-boolean debug = true;
+boolean debug = false;
 boolean skipPinCalibration = false;
 int pinCount = 5;
-
+ArrayList<String> tPlayers = new ArrayList<String>();
+int playerCount;
 
 // Main functions
 
@@ -50,6 +51,7 @@ void draw() {
 
         setupPlayersDraw(); 
         if (setupDone) {
+            game = new Game(tPlayers);
             programState = GlobalState.Playing;
         }
 

@@ -1,9 +1,21 @@
 // Syötteeseen liittyvät jutut tänne
+String playerName = "";
 
 void keyPressed() {
     switch (keyCode) {
 
     }
+    if (programState == GlobalState.Setup && playerCount != 0 && tPlayers.size() < playerCount) {
+        if (keyCode == ENTER) {
+            tPlayers.add(playerName);
+            System.out.println(playerName);
+            playerName = "";
+        } else if (keyCode == BACKSPACE) {
+            playerName =  playerName.substring(0, max(playerName.length() - 1, 0));
+        } else {
+           playerName += key; 
+        }
+    } else {
     switch (key) {
         case ' ': // TODO: implement properly
             if (programState == GlobalState.Calibrating) {
@@ -50,6 +62,27 @@ void keyPressed() {
                 }
             }
             break;
+        case '1':
+            if (programState == GlobalState.Setup) {
+                playerCount = 1;
+            }
+            break;
+        case '2':
+            if (programState == GlobalState.Setup) {
+                playerCount = 2;
+            }
+            break;
+        case '3':
+            if (programState == GlobalState.Setup) {
+                playerCount = 3;
+            }
+            break;
+        case '4':
+            if (programState == GlobalState.Setup) {
+                playerCount = 4;
+            }
+            break;
+    }
     }
 }
 
