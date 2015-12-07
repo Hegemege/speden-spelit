@@ -12,7 +12,7 @@ void keyPressed() {
             playerName = "";
         } else if (keyCode == BACKSPACE) {
             playerName =  playerName.substring(0, max(playerName.length() - 1, 0));
-        } else {
+        } else if (keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT) {
            playerName += key; 
         }
     } else {
