@@ -18,6 +18,9 @@ class Game {
     
     void changeTurn() {
       turn = (turn + 1) % playerCount; 
+      for (int i = 0; i < pins.size(); i++) {
+        pins.get(i).hit = false;
+      }
     }
 
     // Methods
@@ -28,19 +31,18 @@ class Game {
     // Main draw loop for the game
     void draw() {
         background(75);
-
-
-
+        
+        
+        Player p = getPlayerInTurn();
         colCam.draw();
-        int collision = colCam.detectCollision();
-        if (collision !=  -1) { // && isn't already hit or add that to collision detection
-            Player p = getPlayerInTurn();
+        int collisionIndex = colCam.detectCollision();
+        if (collisionIndex !=  - 1 && !pins.get(collisionIndex).hit) { 
             p.points += 1;
-            //Do something to the pin, have to implement adding Pin objects to somewhere first to be able to use hit...
+            pins.get(collisionIndex).hit = true;
         }
         fill(255);
         textSize(24);
-        text("Playing...", 50, 50);
+        text("Current player: " + p.name + "   Points: " + p.points, 50, 50);
     }
 }
 

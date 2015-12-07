@@ -274,12 +274,14 @@ void savePinLocation() {
     if (calibratePinManual) {
         if (calibrationState == 3) { // colCam
             colCam.pinLocations.add(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1]));
+            pins.add(new Pin(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1])));
         } else if (calibrationState == 4) { // frontCam
             frontCam.pinLocations.add(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1]));
         }
     } else {
         if (calibrationState == 3) { // colCam
             colCam.pinLocations.add(new PVector(calibratePinLocation[0], calibratePinLocation[1]));
+            pins.add(new Pin(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1])));
         } else if (calibrationState == 4) { // frontCam
             frontCam.pinLocations.add(new PVector(calibratePinLocation[0], calibratePinLocation[1]));
         }

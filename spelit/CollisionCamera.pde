@@ -41,11 +41,14 @@ class CollisionCamera {
         // TODO draw blobs
         if (debug) {
             for (int i = 0; i < pinLocations.size(); i++) {
-                PVector pin = pinLocations.get(i);
-                ellipseMode(CENTER);
-                fill(0,0,0,0);
-                stroke(255, 0, 0);
-                ellipse(pin.x, pin.y, pinRadius, pinRadius);
+               // PVector pin = pinLocations.get(i);
+               if (!pins.get(i).hit) {
+                   PVector pin = pinLocations.get(i);
+                   ellipseMode(CENTER);
+                   fill(0,0,0,0);
+                   stroke(255, 0, 0);
+                   ellipse(pin.x, pin.y, pinRadius, pinRadius);
+               }
             }
         }
 

@@ -10,10 +10,11 @@ Game game;
 
 GlobalState programState;
 
-boolean debug = false;
+boolean debug = true;
 boolean skipPinCalibration = false;
 int pinCount = 5;
 ArrayList<String> tPlayers = new ArrayList<String>();
+ArrayList<Pin> pins = new ArrayList<Pin>();
 int playerCount;
 
 // Main functions
@@ -26,14 +27,14 @@ void setup() {
 
     // Other variables are initialized in calibrate() in Calibrate.pde
     // DEBUG: remove these when inter
-    if (debug) {
+  /*  if (debug) {
         ArrayList<String> tPlayers = new ArrayList<String>();
         tPlayers.add("Player 1");
         tPlayers.add("Player 2");
         tPlayers.add("Player 3");
         tPlayers.add("Player 4");
         game = new Game(tPlayers);
-    }
+    }*/
 
 }
 
