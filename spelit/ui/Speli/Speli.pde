@@ -104,19 +104,12 @@ void drawViews() {
   }
   
   else if (currentView == 4) {
-    // draw camera view for game
     
-    // texts
-    PFont font1 = createFont("calibri.ttf", 30);
-    textFont(font1);
-    fill(255,255,255);
-    text(views[4].title + getCurrentPlayer(), 250, 100);
-    PFont font2 = createFont("calibri.ttf", 30);
-    textFont(font2);
-    text(views[4].title2 + getCurrentPoints(), 600, 100);
   }
   
   else if (currentView == 5) {
+    // draw camera view for game
+    
     // texts
     PFont font1 = createFont("calibri.ttf", 30);
     textFont(font1);
@@ -136,6 +129,17 @@ void drawViews() {
     PFont font2 = createFont("calibri.ttf", 30);
     textFont(font2);
     text(views[6].title2 + getCurrentPoints(), 600, 100);
+  }
+  
+  else if (currentView == 7) {
+    // texts
+    PFont font1 = createFont("calibri.ttf", 30);
+    textFont(font1);
+    fill(255,255,255);
+    text(views[7].title + getCurrentPlayer(), 250, 100);
+    PFont font2 = createFont("calibri.ttf", 30);
+    textFont(font2);
+    text(views[7].title2 + getCurrentPoints(), 600, 100);
   }
 }
 
@@ -220,6 +224,12 @@ void keyPressed() {
     }}
   
   else if (currentView == 6) {
+    if (keyCode == ENTER) {
+      currentView++;
+    }
+  }
+  
+  else if (currentView == 7) {
     if (keyCode == ENTER) {
       currentView++;
     }
