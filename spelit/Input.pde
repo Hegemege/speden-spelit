@@ -17,7 +17,7 @@ void keyPressed() {
     } else if (calibrationState == 6) {
       switch(keyCode) {
         case ENTER:
-             colCam.blobDetection.setThreshold(trackingTreshold);
+             colCam.setBlobDetectionParameters(trackLight, trackingTreshold);
              calibrationState = 7;
              break;
         case UP:
@@ -85,17 +85,16 @@ void keyPressed() {
                 } else if (calibrationState == 3 || calibrationState == 4) { //set manual calibration of a pin true
                     calibratePinManual = true;
                 } else if (calibrationState == 5) {
-                     if (trackLight) {
-                       trackLight = false;
-                       calibrateBlobDetection.setThreshold(0.2f); 
-                       trackingTreshold = 0.2f;
-                     } else {
-                       trackLight = true;
-                       calibrateBlobDetection.setThreshold(0.8f); 
-                       trackingTreshold = 0.8f;
-                     }
-                     calibrateBlobDetection.setPosDiscrimination(trackLight);
-                     colCam.setBlobDetectionDiscrimination(trackLight);
+                    if (trackLight) {
+                        trackLight = false;
+                        calibrateBlobDetection.setThreshold(0.2f); 
+                        trackingTreshold = 0.2f;
+                    } else {
+                        trackLight = true;
+                        calibrateBlobDetection.setThreshold(0.8f); 
+                        trackingTreshold = 0.8f;
+                    }
+                    calibrateBlobDetection.setPosDiscrimination(trackLight);
                 }
             }
             break;
@@ -117,6 +116,21 @@ void keyPressed() {
         case '4':
             if (programState == GlobalState.Setup) {
                 playerCount = 4;
+            }
+            break;
+        case 'a':
+            if (programState == GlobalState.Playing) {
+                drawDebugPins = !drawDebugPins;
+            }
+            break;
+        case 's':
+            if (programState == GlobalState.Playing) {
+                drawColCam = !drawColCam;
+            }
+            break;
+        case 'd':
+            if (programState == GlobalState.Playing) {
+                drawBlobOutline = !drawBlobOutline;
             }
             break;
     }

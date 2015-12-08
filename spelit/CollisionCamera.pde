@@ -18,48 +18,43 @@ class CollisionCamera {
 
         blobDetection.setPosDiscrimination(false);
         blobDetection.setThreshold(0.2f); 
-        blobDetection.setConstants(2, 4000, 500); //default values 1000, 4000, 500
+        blobDetection.setConstants(20, 4000, 500); //default values 1000, 4000, 500
 
         pinRadius = 30;
     }
     
-    void setBlobDetectionDiscrimination(boolean trackLight) {
-        if (trackLight) {
-            blobDetection.setThreshold(0.8f); 
-        } else {
-            blobDetection.setThreshold(0.2f); 
-        }
+    void setBlobDetectionParameters(boolean trackLight, float threshold) {
         blobDetection.setPosDiscrimination(trackLight);
+        blobDetection.setThreshold(threshold); 
     }
 
     //Methods
     void draw() {
-        if (camera.available()) {
-            camera.read();
-            computeBlobs();
-        }
-
-        //image(img, 0, 0, width, height);
+        //image(img, 0, 0, width, height); //draws the blurred image
         image(camera, 0, 0, width, height);
         
-        
-
         //Draw other stuff on top of the feed
 
-        //Draw debug info
-        // TODO draw blobs
-        if (debug) {
+        //Draw pins
+        if (drawDebugPins) {
             for (int i = 0; i < pinLocations.size(); i++) {
                if (!pins.get(i).hit) {
                    PVector pin = pinLocations.get(i);
                    ellipseMode(CENTER);
-                   fill(0,0,0,0);
+                   fill(255, 255, 255, 70);
                    stroke(255, 0, 0);
                    ellipse(pin.x, pin.y, pinRadius, pinRadius);
                }
             }
         }
 
+    }
+
+    void poll() {
+        if (camera.available()) {
+            camera.read();
+            computeBlobs();
+        }
     }
     
     void computeBlobs() {
@@ -74,9 +69,9 @@ class CollisionCamera {
         for (int n = 0; n < blobDetection.getBlobNb(); n++) {
             Blob b = blobDetection.getBlob(n);
             if (b!=null) {
-                if (debug) {
+                if (drawBlobOutline) { //For debugging purposes
                     ellipseMode(CORNER);
-                    strokeWeight(10); //For debugging purposes
+                    strokeWeight(10); 
                     fill(0,0,0,0);
                     stroke(255,255,255); 
                     ellipse(

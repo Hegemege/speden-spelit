@@ -74,6 +74,10 @@ class Game {
             //ran out of time, do something
         }
 
+        // Poll cameras
+
+        colCam.poll();
+        frontCam.poll();
 
         // Draw
 

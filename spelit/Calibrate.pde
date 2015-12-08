@@ -22,7 +22,7 @@ int calibratePinIndex = 1;
 int[] calibratePinLocation = {0, 0}; //this is updated from the input of camera
 boolean calibratePinManual = false;
 int[] calibratePinManualLocation = {0, 0}; //mouse x/y is stored here when clicked
-boolean trackLight;
+boolean trackLight = false;
 float trackingTreshold = 0.2f;
 
 //Blob detection
@@ -43,7 +43,7 @@ void calibrateDraw() {
 
         //Setup blob detection
         calibrateBlobDetection.setPosDiscrimination(true);
-        calibrateBlobDetection.setConstants(2, 4000, 500); //default values 1000, 4000, 500
+        calibrateBlobDetection.setConstants(20, 4000, 500); //default values 1000, 4000, 500
         calibrateBlobDetection.setThreshold(0.8f); 
 
     } else if (calibrationState == 1) {
@@ -123,7 +123,7 @@ void calibrateDraw() {
         textSize(24);
         text("Switch between tracking light and dark objects", 20, 50);
         text("Press n to switch and y to accept current tracking", 20, 85);
-        drawBlobs();
+        calibrateDrawBlobs();
     } else if (calibrationState == 6) {
         if (colCam.camera.available()) {
             colCam.camera.read();
@@ -136,7 +136,7 @@ void calibrateDraw() {
         text("Calibrate tracking treshold, current treshold: " + String.format("%.1f", trackingTreshold), 20, 50);
         text("Press UP to increase, DOWN to decrease", 20, 85);
         text("and ENTER to accept", 20, 120);
-        drawBlobs();
+        calibrateDrawBlobs();
     } else if (calibrationState == 7) {
         println("calibration done");
         programState = GlobalState.Setup;
@@ -326,7 +326,7 @@ void calibrateComputeBlobs(Capture camera) {
     calibrateBlobDetection.computeBlobs(calibrateImg.pixels);
 }
 
-void drawBlobs() {
+void calibrateDrawBlobs() {
   for (int n = 0; n < calibrateBlobDetection.getBlobNb(); n++) {
     Blob b = calibrateBlobDetection.getBlob(n);
     if (b!=null) {
