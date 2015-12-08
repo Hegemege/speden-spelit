@@ -25,6 +25,8 @@ int[] calibratePinManualLocation = {0, 0}; //mouse x/y is stored here when click
 boolean trackLight = true;
 float trackingTreshold = 0.2f;
 
+boolean[] mirrored = {false, false}; //first index for colCam, second for frontCam
+
 //Blob detection
 PImage calibrateImg = new PImage(200, 150);
 BlobDetection calibrateBlobDetection = new BlobDetection(calibrateImg.width, calibrateImg.height);
@@ -34,7 +36,7 @@ void calibrateDraw() {
     background(75);
 
     if (calibratePinIndex > pinCount) {
-        calibrationState = 5;
+        calibrationState = 7;
     }
 
     if (calibrationState == 0) {
@@ -50,23 +52,77 @@ void calibrateDraw() {
         if (finalCaptures.get(calibrateCameraIndex).available()) {
             finalCaptures.get(calibrateCameraIndex).read();
         }
+        pushMatrix();
+        if (mirrored[0]) {
+            scale(-1, 1);
+            translate(-width, 0);
+        }
         image(finalCaptures.get(calibrateCameraIndex), 0, 0, width, height);
+        popMatrix();
+
         fill(255);
         stroke(0);
         textSize(24);
-        text("Collision camera - y/n?", 20, 50);
+        text("Collision camera - y/n? Mirror m", 20, 50);
 
     } else if (calibrationState == 2) {
         if (finalCaptures.get(calibrateCameraIndex).available()) {
             finalCaptures.get(calibrateCameraIndex).read();
         }
+        pushMatrix();
+        if (mirrored[1]) {
+            scale(-1, 1);
+            translate(-width, 0);
+        }
         image(finalCaptures.get(calibrateCameraIndex), 0, 0, width, height);
+        popMatrix();
+
         fill(255);
         stroke(0);
         textSize(24);
-        text("Front camera - y/n?", 20, 50);
+        text("Front camera - y/n? Mirror m", 20, 50);
 
     } else if (calibrationState == 3) {
+       if (colCam.camera.available()) {
+            colCam.camera.read();
+            calibrateComputeBlobs(colCam.camera);
+        }
+        pushMatrix();
+        if (mirrored[0]) {
+            scale(-1, 1);
+            translate(-width, 0);
+        }
+        image(colCam.camera, 0, 0, width, height);
+        popMatrix();
+
+        fill(255);
+        stroke(0);
+        textSize(24);
+        text("Switch between tracking light and dark objects", 20, 50);
+        text("Press n to switch and y to accept current tracking", 20, 85);
+        calibrateDrawBlobs();
+    } else if (calibrationState == 4) {
+        if (colCam.camera.available()) {
+            colCam.camera.read();
+            calibrateComputeBlobs(colCam.camera);
+        }
+        pushMatrix();
+        if (mirrored[0]) {
+            scale(-1, 1);
+            translate(-width, 0);
+        }
+        image(colCam.camera, 0, 0, width, height);
+        popMatrix();
+
+        fill(255);
+        stroke(0);
+        textSize(24);
+        text("Calibrate tracking treshold, current treshold: " + String.format("%.1f", trackingTreshold), 20, 50);
+        text("Press UP to increase, DOWN to decrease", 20, 85);
+        text("and ENTER to accept", 20, 120);
+        calibrateDrawBlobs();
+
+    } else if (calibrationState == 5) {
 
         if (skipPinCalibration) { //skip pin calibration - use hardcoded values
             for (int i = 0; i < pinCount; i++) {
@@ -76,7 +132,7 @@ void calibrateDraw() {
                 PVector floc = new PVector(100 + 50*i, height - 100);
                 frontCam.pinLocations.add(floc);
             }
-            calibrationState = 5;
+            calibrationState = 7;
             return;
         }
 
@@ -85,7 +141,13 @@ void calibrateDraw() {
             colCam.camera.read();
             calibrateComputeBlobs(colCam.camera);
         }
+        pushMatrix();
+        if (mirrored[0]) {
+            scale(-1, 1);
+            translate(-width, 0);
+        }
         image(colCam.camera, 0, 0, width, height);
+        popMatrix();
 
         fill(255);
         stroke(0);
@@ -95,13 +157,19 @@ void calibrateDraw() {
             textSize(18);
             text("Manual calibration: click on the center of the pin and press y", 20, 80);
         }
-    } else if (calibrationState == 4) {
+    } else if (calibrationState == 6) {
         //front camera pin calibration
         if (frontCam.camera.available()) {
             frontCam.camera.read();
             calibrateComputeBlobs(frontCam.camera);
         }
+        pushMatrix();
+        if (mirrored[1]) {
+            scale(-1, 1);
+            translate(-width, 0);
+        }
         image(frontCam.camera, 0, 0, width, height);
+        popMatrix();
 
         fill(255);
         stroke(0);
@@ -111,39 +179,14 @@ void calibrateDraw() {
             textSize(18);
             text("Manual calibration: click on the center of the pin and press y", 20, 80);
         }
-    } else if (calibrationState == 5) {
-       if (colCam.camera.available()) {
-            colCam.camera.read();
-            calibrateComputeBlobs(colCam.camera);
-        }
-        image(colCam.camera, 0, 0, width, height);
 
-        fill(255);
-        stroke(0);
-        textSize(24);
-        text("Switch between tracking light and dark objects", 20, 50);
-        text("Press n to switch and y to accept current tracking", 20, 85);
-        calibrateDrawBlobs();
-    } else if (calibrationState == 6) {
-        if (colCam.camera.available()) {
-            colCam.camera.read();
-            calibrateComputeBlobs(colCam.camera);
-        }
-        image(colCam.camera, 0, 0, width, height);
-        fill(255);
-        stroke(0);
-        textSize(24);
-        text("Calibrate tracking treshold, current treshold: " + String.format("%.1f", trackingTreshold), 20, 50);
-        text("Press UP to increase, DOWN to decrease", 20, 85);
-        text("and ENTER to accept", 20, 120);
-        calibrateDrawBlobs();
     } else if (calibrationState == 7) {
         println("calibration done");
         programState = GlobalState.Setup;
     }
 
     //common to 3 and 4
-    if (calibrationState == 3 || calibrationState == 4) {
+    if (calibrationState == 5 || calibrationState == 6) {
         //analyse camera input for blobs
         //analyseCamera will update calibrationPinLocation array
         analyseCamera();
@@ -303,25 +346,43 @@ void analyseCamera() {
 
 void savePinLocation() {
     if (calibratePinManual) {
-        if (calibrationState == 3) { // colCam
+        if (calibrationState == 5) { // colCam
             colCam.pinLocations.add(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1]));
             pins.add(new Pin(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1])));
-        } else if (calibrationState == 4) { // frontCam
+        } else if (calibrationState == 6) { // frontCam
             frontCam.pinLocations.add(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1]));
         }
     } else {
-        if (calibrationState == 3) { // colCam
+        if (calibrationState == 5) { // colCam
             colCam.pinLocations.add(new PVector(calibratePinLocation[0], calibratePinLocation[1]));
             pins.add(new Pin(new PVector(calibratePinManualLocation[0], calibratePinManualLocation[1])));
-        } else if (calibrationState == 4) { // frontCam
+        } else if (calibrationState == 6) { // frontCam
             frontCam.pinLocations.add(new PVector(calibratePinLocation[0], calibratePinLocation[1]));
         }
     }
 }
 
 void calibrateComputeBlobs(Capture camera) {
-    calibrateImg.copy(camera, 0, 0, camera.width, camera.height, 
+    int camIndex = 0;
+    if (calibrationState == 5 || calibrationState == 6) {
+        camIndex = calibrationState - 5;
+    } 
+    if (mirrored[camIndex]) {
+        PImage timg = new PImage(camera.width, camera.height);
+        camera.loadPixels();
+        timg.loadPixels();
+        for (int y = 0; y < camera.height; y++) {
+            for (int x = 0; x < camera.width; x++) {
+                timg.pixels[(camera.width - x - 1) + y*camera.width] = camera.pixels[y*camera.width+x];
+            }
+        }
+        timg.updatePixels(); 
+        calibrateImg.copy(timg, 0, 0, timg.width, timg.height, 
      0, 0, calibrateImg.width, calibrateImg.height);
+    } else {
+        calibrateImg.copy(camera, 0, 0, camera.width, camera.height, 
+     0, 0, calibrateImg.width, calibrateImg.height);
+    }
     fastblur(calibrateImg, 2);
     calibrateBlobDetection.computeBlobs(calibrateImg.pixels);
 }

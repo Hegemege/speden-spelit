@@ -12,7 +12,7 @@ Game game;
 GlobalState programState;
 
 boolean debug = true;
-boolean skipPinCalibration = true;
+boolean skipPinCalibration = false;
 boolean skipPlayerSetup = false;
 boolean drawColCam = false;
 boolean drawBlobOutline = true;

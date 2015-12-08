@@ -14,11 +14,11 @@ void keyPressed() {
         } else if (keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT) {
            playerName += key; 
         }
-    } else if (calibrationState == 6) {
+    } else if (calibrationState == 4) {
       switch(keyCode) {
         case ENTER:
              colCam.setBlobDetectionParameters(trackLight, trackingTreshold);
-             calibrationState = 7;
+             calibrationState = 5;
              break;
         case UP:
              trackingTreshold += 0.1f;
@@ -62,18 +62,18 @@ void keyPressed() {
                     calibrationState++;
 
                     calibrateCameraIndex = (calibrateCameraIndex + 1) % finalCaptures.size(); //defaults to the next camera
-                } else if (calibrationState == 3 || calibrationState == 4) { // save pin location
+                } else if (calibrationState == 5 || calibrationState == 6) { // save pin location
                     savePinLocation();
-                    if (calibrationState == 4) {
+                    if (calibrationState == 6) {
                         calibratePinIndex += 1;
-                        calibrationState = 3;
+                        calibrationState = 5;
                     } else {
-                        calibrationState = 4;
+                        calibrationState = 6;
                     }
                     calibratePinManual = false;
                     
-                } else if (calibrationState == 5) {
-                     calibrationState = 6;
+                } else if (calibrationState == 3) {
+                     calibrationState = 4;
                 }
             }
             break;
@@ -82,9 +82,9 @@ void keyPressed() {
                 if (calibrationState == 1 || calibrationState == 2) { //switches the camera
                     calibrateCameraIndex = (calibrateCameraIndex + 1) % finalCaptures.size();
                     println("switched camera to " + calibrateCameraIndex);
-                } else if (calibrationState == 3 || calibrationState == 4) { //set manual calibration of a pin true
+                } else if (calibrationState == 5 || calibrationState == 6) { //set manual calibration of a pin true
                     calibratePinManual = true;
-                } else if (calibrationState == 5) {
+                } else if (calibrationState == 3) {
                     if (trackLight) {
                         trackLight = false;
                         calibrateBlobDetection.setThreshold(0.2f); 
@@ -95,6 +95,13 @@ void keyPressed() {
                         trackingTreshold = 0.8f;
                     }
                     calibrateBlobDetection.setPosDiscrimination(trackLight);
+                }
+            }
+            break;
+        case 'm':
+            if (programState == GlobalState.Calibrating) {
+                if (calibrationState == 1 || calibrationState == 2) {
+                    mirrored[calibrationState - 1] = !mirrored[calibrationState - 1];
                 }
             }
             break;
@@ -139,7 +146,7 @@ void keyPressed() {
 
 void mousePressed() {
     if (programState == GlobalState.Calibrating) {
-        if (calibrationState == 3 || calibrationState == 4) {
+        if (calibrationState == 5 || calibrationState == 6) {
             calibratePinManualLocation[0] = mouseX;
             calibratePinManualLocation[1] = mouseY;
         }

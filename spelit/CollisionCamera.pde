@@ -31,7 +31,13 @@ class CollisionCamera {
     //Methods
     void draw() {
         //image(img, 0, 0, width, height); //draws the blurred image
+        pushMatrix();
+        if (mirrored[0]) {
+            scale(-1, 1);
+            translate(-width, 0);
+        }
         image(camera, 0, 0, width, height);
+        popMatrix();
         
         //Draw other stuff on top of the feed
 
@@ -58,8 +64,22 @@ class CollisionCamera {
     }
     
     void computeBlobs() {
-        img.copy(camera, 0, 0, camera.width, camera.height, 
+        if (mirrored[0]) {
+            PImage timg = new PImage(camera.width, camera.height);
+            camera.loadPixels();
+            timg.loadPixels();
+            for (int y = 0; y < camera.height; y++) {
+                for (int x = 0; x < camera.width; x++) {
+                    timg.pixels[(camera.width - x - 1) + y*camera.width] = camera.pixels[y*camera.width+x];
+                }
+            }
+            timg.updatePixels(); 
+            img.copy(timg, 0, 0, timg.width, timg.height, 
          0, 0, img.width, img.height);
+        } else {
+            img.copy(camera, 0, 0, camera.width, camera.height, 
+         0, 0, img.width, img.height);
+        }
         fastblur(img, 2);
         blobDetection.computeBlobs(img.pixels);
     }
@@ -72,8 +92,8 @@ class CollisionCamera {
                 //TODO: tähän blobin sanity checkausta, esim jättimäiset blobit voi skipata
 
                 for (int i = 0; i < pinLocations.size(); i++) {
-                    float radius =  pow(pinRadius + b.w/2*width, 2); //This simple radius only works with ellipse that is relatively close to a circle
-                    float distance =  pow((b.x*width) - (pinLocations.get(i).x),2) + pow((b.y*height) - (pinLocations.get(i).y), 2);
+                    float radius =  pinRadius + b.w/2*width; //This simple radius only works with ellipse that is relatively close to a circle
+                    float distance =  pow(pow((b.x*width) - (pinLocations.get(i).x),2) + pow((b.y*height) - (pinLocations.get(i).y), 2), 0.5);
                     if (distance <= radius) {
                         return i;
                     }

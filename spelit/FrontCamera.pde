@@ -15,7 +15,13 @@ class FrontCamera {
 
     //Methods
     void draw() {
+        pushMatrix();
+        if (mirrored[1]) {
+            scale(-1, 1);
+            translate(-width, 0);
+        }
         image(camera, 0, 0, width, height);
+        popMatrix();
 
         //Draw pins - debug
         if (drawDebugPins) {
