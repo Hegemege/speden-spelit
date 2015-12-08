@@ -4,12 +4,15 @@ import java.util.*;
 import blobDetection.*;
 import java.util.Timer;
 import java.util.TimerTask;
+import ddf.minim.*;
+
 // Global variables
 CollisionCamera colCam;
 FrontCamera frontCam;
 Game game;
-
 GlobalState programState;
+Minim minim;
+ddf.minim.AudioPlayer song;
 
 boolean debug = true;
 boolean skipPinCalibration = false;
@@ -43,6 +46,8 @@ void setup() {
         tPlayers.add("Player 3");
         tPlayers.add("Player 4");
     }
+    minim = new Minim(this);
+   // player = minim.loadFile("spelit.mp3");
     basicSetup();
     createStartViews();
 }

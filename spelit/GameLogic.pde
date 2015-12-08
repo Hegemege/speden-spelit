@@ -8,7 +8,7 @@ class Game {
     boolean             timeOver;
     int                 seconds;
     Timer               countdownTimer;
-
+    boolean             playingSound;
     // Constructor
     Game(ArrayList<String> playerNames) {
         players = new ArrayList<Player>();
@@ -16,7 +16,6 @@ class Game {
         for (int i = 0; i < playerNames.size(); ++i) {
             players.add( new Player(playerNames.get(i)) );
         }
-
         turn = 0;
         gamePaused = true;
         timeOver = false;
@@ -29,13 +28,29 @@ class Game {
           @Override
           public void run() {
               if (seconds == 0) {
+                if (!playingSound) {
                   timeOver = true;
+                  loadSong("spelit.mp3");
+                  playingSound = true;
+                };
               } else if (!timeOver && !gamePaused) {
                   seconds -= 1;
               }
           }
         }, 1000, 1000);
     }
+    
+    public void loadSong(String songName)
+{
+    if (song != null) {
+        song.close();
+        minim.stop();
+    } 
+    if (!playingSound) {
+        song = minim.loadFile(songName, 1024);
+        song.play();
+    }
+}
     
     void playTurn() {
         seconds = 15;
@@ -45,6 +60,7 @@ class Game {
     
     void changeTurn() {
       countdownTimer.cancel(); 
+      playingSound = false;
       timeOver = false;
       turn = (turn + 1) % playerCount; 
       for (int i = 0; i < pins.size(); i++) {
