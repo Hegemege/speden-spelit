@@ -57,6 +57,8 @@ void keyPressed() {
                     }
                     calibratePinManual = false;
                     
+                } else if (calibrationState == 5) {
+                     calibrationState = 6;
                 }
             }
             break;
@@ -67,6 +69,16 @@ void keyPressed() {
                     calibrateCameraIndex = (calibrateCameraIndex + 1) % 2;
                 } else if (calibrationState == 3 || calibrationState == 4) { //set manual calibration of a pin true
                     calibratePinManual = true;
+                } else if (calibrationState == 5) {
+                     if (trackLight) {
+                       trackLight = false;
+                        calibrateBlobDetection.setThreshold(0.2f); 
+                     } else {
+                       trackLight = true;
+                        calibrateBlobDetection.setThreshold(0.8f); 
+                     }
+                     calibrateBlobDetection.setPosDiscrimination(trackLight);
+                     colCam.setBlobDetectionDiscrimination(trackLight);
                 }
             }
             break;

@@ -22,6 +22,15 @@ class CollisionCamera {
 
         pinRadius = 30;
     }
+    
+    void setBlobDetectionDiscrimination(boolean trackLight) {
+        if (trackLight) {
+            blobDetection.setThreshold(0.8f); 
+        } else {
+            blobDetection.setThreshold(0.2f); 
+        }
+        blobDetection.setPosDiscrimination(trackLight);
+    }
 
     //Methods
     void draw() {
@@ -75,7 +84,6 @@ class CollisionCamera {
                     b.w*width,b.h*height
                     );
                 }
-
                 //TODO: tähän blobin sanity checkausta, esim jättimäiset blobit voi skipata
 
                 for (int i = 0; i < pinLocations.size(); i++) {

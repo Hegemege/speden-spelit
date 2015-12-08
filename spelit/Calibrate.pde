@@ -20,9 +20,9 @@ ArrayList<Capture> finalCaptures = new ArrayList<Capture>();
 int calibrateCameraIndex = 0;
 int calibratePinIndex = 1;
 int[] calibratePinLocation = {0, 0}; //this is updated from the input of camera
-
 boolean calibratePinManual = false;
 int[] calibratePinManualLocation = {0, 0}; //mouse x/y is stored here when clicked
+boolean trackLight;
 
 //Blob detection
 PImage calibrateImg = new PImage(200, 150);
@@ -111,6 +111,19 @@ void calibrateDraw() {
             text("Manual calibration: click on the center of the pin and press y", 20, 80);
         }
     } else if (calibrationState == 5) {
+       if (colCam.camera.available()) {
+            colCam.camera.read();
+            calibrateComputeBlobs(colCam.camera);
+        }
+        image(colCam.camera, 0, 0, width, height);
+
+        fill(255);
+        stroke(0);
+        textSize(24);
+            text("Switch between tracking light and dark objects", 20, 50);
+            text("Press n to switch and y to accept current tracking", 20, 85);
+            drawBlobs();
+    } else if (calibrationState == 6) {
         println("calibration done");
         programState = GlobalState.Setup;
     }
@@ -296,4 +309,20 @@ void calibrateComputeBlobs(Capture camera) {
      0, 0, calibrateImg.width, calibrateImg.height);
     fastblur(calibrateImg, 2);
     calibrateBlobDetection.computeBlobs(calibrateImg.pixels);
+}
+
+void drawBlobs() {
+  for (int n = 0; n < calibrateBlobDetection.getBlobNb(); n++) {
+    Blob b = calibrateBlobDetection.getBlob(n);
+    if (b!=null) {
+      ellipseMode(CORNER);
+      strokeWeight(10);
+      fill(0,0,0,0);
+      stroke(255,255,255); 
+      ellipse(
+      b.xMin*width,b.yMin*height,
+      b.w*width,b.h*height
+      );
+    }
+  }
 }
