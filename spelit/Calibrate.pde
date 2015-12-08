@@ -23,6 +23,7 @@ int[] calibratePinLocation = {0, 0}; //this is updated from the input of camera
 boolean calibratePinManual = false;
 int[] calibratePinManualLocation = {0, 0}; //mouse x/y is stored here when clicked
 boolean trackLight;
+float trackingTreshold = 0.2f;
 
 //Blob detection
 PImage calibrateImg = new PImage(200, 150);
@@ -120,10 +121,23 @@ void calibrateDraw() {
         fill(255);
         stroke(0);
         textSize(24);
-            text("Switch between tracking light and dark objects", 20, 50);
-            text("Press n to switch and y to accept current tracking", 20, 85);
-            drawBlobs();
+        text("Switch between tracking light and dark objects", 20, 50);
+        text("Press n to switch and y to accept current tracking", 20, 85);
+        drawBlobs();
     } else if (calibrationState == 6) {
+        if (colCam.camera.available()) {
+            colCam.camera.read();
+            calibrateComputeBlobs(colCam.camera);
+        }
+        image(colCam.camera, 0, 0, width, height);
+        fill(255);
+        stroke(0);
+        textSize(24);
+        text("Calibrate tracking treshold, current treshold: " + String.format("%.1f", trackingTreshold), 20, 50);
+        text("Press UP to increase, DOWN to decrease", 20, 85);
+        text("and ENTER to accept", 20, 120);
+        drawBlobs();
+    } else if (calibrationState == 7) {
         println("calibration done");
         programState = GlobalState.Setup;
     }

@@ -14,6 +14,21 @@ void keyPressed() {
         } else if (keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT) {
            playerName += key; 
         }
+    } else if (calibrationState == 6) {
+      switch(keyCode) {
+        case ENTER:
+             colCam.blobDetection.setThreshold(trackingTreshold);
+             calibrationState = 7;
+             break;
+        case UP:
+             trackingTreshold += 0.1f;
+             calibrateBlobDetection.setThreshold(trackingTreshold); 
+             break;
+        case DOWN:
+             trackingTreshold -= 0.1f;
+             calibrateBlobDetection.setThreshold(trackingTreshold); 
+             break;
+      }
     } else {
     switch (key) {
         case ' ': // TODO: implement properly
@@ -72,10 +87,12 @@ void keyPressed() {
                 } else if (calibrationState == 5) {
                      if (trackLight) {
                        trackLight = false;
-                        calibrateBlobDetection.setThreshold(0.2f); 
+                       calibrateBlobDetection.setThreshold(0.2f); 
+                       trackingTreshold = 0.2f;
                      } else {
                        trackLight = true;
-                        calibrateBlobDetection.setThreshold(0.8f); 
+                       calibrateBlobDetection.setThreshold(0.8f); 
+                       trackingTreshold = 0.8f;
                      }
                      calibrateBlobDetection.setPosDiscrimination(trackLight);
                      colCam.setBlobDetectionDiscrimination(trackLight);
