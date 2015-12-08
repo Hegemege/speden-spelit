@@ -64,6 +64,18 @@ class Game {
         // Logic 
         Player p = getPlayerInTurn();
         
+        colCam.poll();
+        frontCam.poll();
+
+        // Draw
+
+        if (drawColCam) {
+            colCam.draw();
+        } else {
+            frontCam.draw();
+        }
+
+        
         if(!gamePaused && !timeOver) {
             int collisionIndex = colCam.detectCollision();
             if (collisionIndex !=  - 1 && !pins.get(collisionIndex).hit) { 
@@ -76,17 +88,7 @@ class Game {
 
         // Poll cameras
 
-        colCam.poll();
-        frontCam.poll();
-
-        // Draw
-
-        if (drawColCam) {
-            colCam.draw();
-        } else {
-            frontCam.draw();
-        }
-
+     
 
         if (gamePaused) {
             //draw some stuff

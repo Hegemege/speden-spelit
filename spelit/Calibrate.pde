@@ -22,7 +22,7 @@ int calibratePinIndex = 1;
 int[] calibratePinLocation = {0, 0}; //this is updated from the input of camera
 boolean calibratePinManual = false;
 int[] calibratePinManualLocation = {0, 0}; //mouse x/y is stored here when clicked
-boolean trackLight = false;
+boolean trackLight = true;
 float trackingTreshold = 0.2f;
 
 //Blob detection

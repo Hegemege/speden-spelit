@@ -16,15 +16,15 @@ class CollisionCamera {
         img = new PImage(200, 150);
         blobDetection = new BlobDetection(img.width, img.height);
 
-        blobDetection.setPosDiscrimination(false);
-        blobDetection.setThreshold(0.2f); 
+        blobDetection.setPosDiscrimination(true);
+        blobDetection.setThreshold(0.8f); 
         blobDetection.setConstants(20, 4000, 500); //default values 1000, 4000, 500
 
         pinRadius = 30;
     }
     
-    void setBlobDetectionParameters(boolean trackLight, float threshold) {
-        blobDetection.setPosDiscrimination(trackLight);
+    void setBlobDetectionParameters(boolean light, float threshold) {
+        blobDetection.setPosDiscrimination(light);
         blobDetection.setThreshold(threshold); 
     }
 
