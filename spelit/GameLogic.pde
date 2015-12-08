@@ -60,6 +60,12 @@ class Game {
     // Main draw loop for the game
     void draw() {
         background(75);
+
+
+        // Poll cameras
+
+        colCam.poll();
+        frontCam.poll();
         
         // Logic 
         Player p = getPlayerInTurn();
@@ -86,12 +92,12 @@ class Game {
             //ran out of time, do something
         }
 
-        // Poll cameras
-
-     
-
         if (gamePaused) {
             //draw some stuff
+        }
+
+        if (drawBlobOutline) {
+            colCam.drawBlobs();
         }
 
         fill(255);
