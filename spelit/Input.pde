@@ -46,7 +46,7 @@ void keyPressed() {
 
                     calibrationState++;
 
-                    calibrateCameraIndex = (calibrateCameraIndex + 1) % 2; //defaults to the other camera for the next one
+                    calibrateCameraIndex = (calibrateCameraIndex + 1) % finalCaptures.size(); //defaults to the next camera
                 } else if (calibrationState == 3 || calibrationState == 4) { // save pin location
                     savePinLocation();
                     if (calibrationState == 4) {
@@ -65,8 +65,8 @@ void keyPressed() {
         case 'n':
             if (programState == GlobalState.Calibrating) {
                 if (calibrationState == 1 || calibrationState == 2) { //switches the camera
-                    println("switched cameras");
-                    calibrateCameraIndex = (calibrateCameraIndex + 1) % 2;
+                    calibrateCameraIndex = (calibrateCameraIndex + 1) % finalCaptures.size();
+                    println("switched camera to " + calibrateCameraIndex);
                 } else if (calibrationState == 3 || calibrationState == 4) { //set manual calibration of a pin true
                     calibratePinManual = true;
                 } else if (calibrationState == 5) {

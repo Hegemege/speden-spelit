@@ -172,52 +172,53 @@ ArrayList<Capture> getCameras() {
 
     //Go through the camera results, pick two different cameras with the largest resolution at fps=30 or more
 
-    ArrayList<CameraResult> candidates_cam1 = new ArrayList<CameraResult>();
-    ArrayList<CameraResult> candidates_cam2 = new ArrayList<CameraResult>();
-
-    String camName1 = camResults.get(0).camName;
+    ArrayList<ArrayList<CameraResult>> candidates = new ArrayList<ArrayList<CameraResult>>();
 
     for (int i = 0; i < camResults.size(); i++) {
-        if (camResults.get(i).camFPS >= 30) {
-            if (camResults.get(i).camName.equals(camName1)) {
-                candidates_cam1.add(camResults.get(i));
-            } else {
-                candidates_cam2.add(camResults.get(i));
+        if (camResults.get(i).camFPS >= 30) { // we use only 30fps or higher capture devices for best input
+            // find if a camera type already exists in the candidates, else, add new sublist
+            boolean added = false;
+            for (int k = 0; k < candidates.size(); k++) {
+                ArrayList<CameraResult> candlist = candidates.get(k);
+                if (camResults.get(i).camName.equals(candlist.get(0).camName)) {
+                    candlist.add(camResults.get(i));
+                    added = true;
+                    break;
+                }
             }
-            
+            if (!added) {
+                ArrayList<CameraResult> candidates_sublist = new ArrayList<CameraResult>();
+                candidates_sublist.add(camResults.get(i));
+                candidates.add(candidates_sublist);
+            }
         }
     }
 
-    //Pick top resolution camera from both candidate lists
+    //Pick top resolution camera from each candidate sublist
+    ArrayList<CameraResult> toplist = new ArrayList<CameraResult>();
+    for (int i = 0; i < candidates.size(); i++) {
+        toplist.add(candidates.get(i).get(0));
+    }
 
-    CameraResult top1 = candidates_cam1.get(0);
-    CameraResult top2 = candidates_cam2.get(0); // TODO: REPLACE WITH CAM2 WHEN USING TWO CAMERAS
-
-    for (int i = 0; i < candidates_cam1.size(); i++) {
-        if (candidates_cam1.get(i).getRes() > top1.getRes()) {
-            top1 = candidates_cam1.get(i);
+    for (int i = 0; i < candidates.size(); i++) {
+        for (int j = 0; j < candidates.get(i).size(); j++) {
+            CameraResult camres = candidates.get(i).get(j);
+            if (camres.getRes() > toplist.get(i).getRes()) {
+                toplist.set(i, camres);
+            }
         }
     }
 
-    //TODO: REMOVE COMMENT WHEN USING TWO CAMERAS
-    for (int i = 0; i < candidates_cam2.size(); i++) {
-        if (candidates_cam2.get(i).getRes() > top2.getRes()) {
-            top2 = candidates_cam2.get(i);
-        }
+    println("Chose top cameras:");
+    for (int i = 0; i < toplist.size(); i++) {
+        println(toplist.get(i).rawstr);
     }
 
-    println("Chose two cameras:");
-    println(top1.rawstr);
-    println(top2.rawstr);
-
-    Capture cap1 = new Capture(this, top1.rawstr);
-    Capture cap2 = new Capture(this, top2.rawstr); // TODO: REPLACE WITH TOP2 WHEN USING TWO CAMERAS
-
-    cap1.start();
-    cap2.start();
-
-    finalCameras.add(cap1);
-    finalCameras.add(cap2);
+    for (int i = 0; i < toplist.size(); i++) {
+        Capture cap = new Capture(this, toplist.get(i).rawstr);
+        cap.start();
+        finalCameras.add(cap);
+    }
 
     return finalCameras;
 }
