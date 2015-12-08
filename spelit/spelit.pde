@@ -21,6 +21,8 @@ int pinCount = 5;
 ArrayList<String> tPlayers = new ArrayList<String>();
 ArrayList<Pin> pins = new ArrayList<Pin>();
 int playerCount;
+int maxTurns = 2;
+int turnCount = 0;
 View[] views;
 int currentView;
 int prevView;
@@ -83,6 +85,9 @@ void draw() {
         }
 
     } else if (programState == GlobalState.Playing) {
+        if (turnCount == maxTurns) {
+            currentView = 7;
+        }
         drawViews();
         //game.draw();
 
@@ -112,7 +117,7 @@ void createPlayViews() {
   views[6] = new View(6, bgColor, "Vuoro vaihtuu ", "Pelaaja: ");
   
   // game over (points and did the player win) + replay
-  views[7] = new View(7, bgColor, "Peli päättyy", "Pelaaja" + game.getCurrentPlayer() + "voitti");
+  views[7] = new View(7, bgColor, "Peli päättyy", "Pelaaja ", "Pisteillä ");
 }
 
 void drawViews() {
@@ -214,9 +219,12 @@ void drawViews() {
     PFont font1 = createFont("calibri.ttf", 30);
     textFont(font1);
     fill(255,255,255);
-    text(views[7].title + game.getCurrentPlayer(), 250, 100);
+    text(views[7].title, 250, 100);
     PFont font2 = createFont("calibri.ttf", 30);
     textFont(font2);
-    text(views[7].title2 + game.getCurrentPoints(), 600, 100);
+    text(views[7].title2 + game.getTopPlayer() +  " voitti", 400, 100);
+    PFont font3 = createFont("calibri.ttf", 30);
+    textFont(font3);
+    text(views[7].text + game.getCurrentPoints(), 600, 100);
   }
 }

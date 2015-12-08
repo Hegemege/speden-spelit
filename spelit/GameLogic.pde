@@ -50,11 +50,27 @@ class Game {
       for (int i = 0; i < pins.size(); i++) {
         pins.get(i).hit = false;
       }
+      if (turn == 0) {
+         turnCount ++; 
+      }
     }
     
     String getCurrentPlayer() {
   // return the name of the current player
         return players.get(turn).name;
+    } 
+    
+    String getTopPlayer() {
+      String topPlayer = players.get(0).name;
+      int maxPoints = players.get(0).points;
+      for (int i = 0; i < players.size(); i++) {
+          int currentPoints = players.get(i).points;
+          if (currentPoints > maxPoints) {
+             maxPoints =  currentPoints;
+             topPlayer = players.get(i).name;
+          }
+      }
+        return topPlayer;
     } 
 
     int getCurrentPoints() {
