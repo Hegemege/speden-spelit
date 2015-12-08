@@ -7,7 +7,7 @@ boolean setupStarted = false;
 // Use this as a regular draw until player setup is complete
 void setupPlayersDraw() {
     if (!setupStarted) {
-      
+        
     } else if (playerCount != 0 && tPlayers.size() < playerCount) {
         background(75);
         fill(255);

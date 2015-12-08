@@ -51,6 +51,20 @@ class Game {
         pins.get(i).hit = false;
       }
     }
+    
+    String getCurrentPlayer() {
+  // return the name of the current player
+        return players.get(turn).name;
+    } 
+
+    int getCurrentPoints() {
+  // return the points of the current player
+        return players.get(turn).points;
+    }
+    
+    int getTimeLeft() {
+        return seconds; 
+    }
 
     // Methods
     Player getPlayerInTurn() {
@@ -100,9 +114,9 @@ class Game {
             colCam.drawBlobs();
         }
 
-        fill(255);
-        textSize(24);
-       /* if (!gamePaused) {
+       // fill(255);
+       // textSize(24);
+      /*if (!gamePaused) {
            text("Current player: " + p.name + "    Points: " + p.points + "    Time left: " + seconds, 50, 50);
         } else {
             text("Current player: " + p.name + "    Points: " + p.points, 50, 50);

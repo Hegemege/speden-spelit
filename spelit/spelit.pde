@@ -34,7 +34,6 @@ void setup() {
    // fullScreen();
     // Initialize processing-specific things
     size(1280, 720);
-
     // Other variables are initialized in calibrate() in Calibrate.pde
     if (skipPlayerSetup) {
         tPlayers.add("Player 1");
@@ -42,7 +41,22 @@ void setup() {
         tPlayers.add("Player 3");
         tPlayers.add("Player 4");
     }
+    basicSetup();
+    createStartViews();
+}
 
+void basicSetup() {
+  // Views setup
+  currentView = 0;
+  prevView = -1;
+  views = new View[8];
+
+  bgColor = color(203,204,204,1);
+  fontColor = color(255,255,255,1);
+  
+  // set cameras
+  colCam = null;
+  frontCam = null;
 }
 
 void draw() {
@@ -56,23 +70,28 @@ void draw() {
         }
 
     } else if (programState == GlobalState.Setup) {
-
-        setupPlayersDraw(); 
+        if (currentView == 0) {
+           currentView = 1;
+        }
+        //setupPlayersDraw(); 
+        drawViews();
         if (setupDone) {
             game = new Game(tPlayers);
+            createPlayViews();
+            currentView = 5;
             programState = GlobalState.Playing;
         }
 
     } else if (programState == GlobalState.Playing) {
-
-        game.draw();
+        drawViews();
+        //game.draw();
 
     }
 }
 
-void createViews() {
-  // First view: start view with title
-  views[0] = new View(0, colCam, frontCam, "title", "subtitle", "other content");
+void createStartViews() {
+  // calibration
+  views[0] = new View(0, colCam, frontCam, "Kameroiden kalibrointi", "subtitle", "other content");
   
   // start view
   views[1] = new View(1, bgColor, "SPEDEN", "SPELIT", "Paina ENTER jatkaaksesi");
@@ -80,14 +99,20 @@ void createViews() {
   // add players
   views[2] = new View(2, bgColor, "Pelaajat", "Pelaajien määrä: ", "Pelaajien nimet: ");
   
+  // game begins, which player has their turn
+}
+
+void createPlayViews() {
+  views[4] = new View(4, bgColor, "Peli alkaa", "Pelaaja: " + game.getCurrentPlayer());
+  
   // game cam view
-  views[4] = new View(4, bgColor, "Pelaaja: ", "Pisteet: ", "Aikaa jäljellä: ");
+  views[5] = new View(5, bgColor, "Pelaaja: ", "Pisteet: ", "Aikaa jäljellä: ");
   
   // change player turns
-  views[5] = new View(5, bgColor, "Vuoro vaihtuu", "Pelaaja: ");
+  views[6] = new View(6, bgColor, "Vuoro vaihtuu ", "Pelaaja: ");
   
   // game over (points and did the player win) + replay
-  views[6] = new View(6, bgColor, "Peli päättyy", "Pelaaja x voitti");
+  views[7] = new View(7, bgColor, "Peli päättyy", "Pelaaja" + game.getCurrentPlayer() + "voitti");
 }
 
 void drawViews() {
@@ -109,15 +134,15 @@ void drawViews() {
     PFont font1 = createFont("calibri.ttf", 120);
     textFont(font1);
     fill(255,255,255);
-    text(views[0].title, 300, 325);
+    text(views[1].title, 300, 325);
     PFont font2 = createFont("calibri.ttf", 120);
     textFont(font2);
     fill(0,205,0);
-    text(views[0].title2, 550, 450);
+    text(views[1].title2, 550, 450);
     PFont font3 = createFont("calibri.ttf", 30);
     textFont(font3);
     fill(255,255,255);
-    text(views[0].text, 475, 600);
+    text(views[1].text, 475, 600);
   }
 
   else if (currentView == 2 || currentView == 3) {
@@ -125,33 +150,73 @@ void drawViews() {
     PFont font1 = createFont("calibri.ttf", 40);
     textFont(font1);
     fill(255,255,255);
-    text(views[1].title, 550, 100);
+    text(views[2].title, 550, 100);
     PFont font2 = createFont("calibri.ttf", 30);
     textFont(font2);
-    text(views[1].title2, 400, 250);
+    text(views[2].title2, 400, 250);
+    if (playerCount > 0) {
+        text(playerCount, 650, 250);
+    }
     if (currentView == 3) {
       PFont font3 = createFont("calibri.ttf", 30);
       textFont(font3);
-      text(views[1].text, 400, 350);
+      text(views[2].text, 400, 350);
+      int helpIndex = 0;
+      for (int i = 0; i < playerCount; i++) {
+        PFont font4 = createFont("calibri.ttf", 30);
+        textFont(font4);
+        text("Pelaaja " + (i+1) + ":", 400, 400+(i*50));
+        if (tPlayers.size() > i) {
+            text(tPlayers.get(i), 650, 400+(i*50));
+        } else if (tPlayers.size() == i){
+            text(playerName, 650, 400+(i*50));
+        }
+      }
     }
   }
   
   else if (currentView == 4) {
-    // draw camera view for game
     
+  }
+  
+  else if (currentView == 5) {
+    // draw camera view for game
+    game.draw();
     // texts
     PFont font1 = createFont("calibri.ttf", 30);
     textFont(font1);
     fill(255,255,255);
-    text(views[3].title + getCurrentPlayer(), 250, 100);
+    text(views[5].title + game.getCurrentPlayer(), 250, 100);
     PFont font2 = createFont("calibri.ttf", 30);
     textFont(font2);
-    text(views[3].title2 + getCurrentPoints(), 600, 100);
-     if (!gamePaused) {
-       PFont font3 = createFont("calibri.ttf", 30);
-       textFont(font2);
-       text(views[3].title3 + getCurrentPoints(), 600, 100);
-       Time left: " + seconds
-     }
+    text(views[5].title2 + game.getCurrentPoints(), 600, 100);
+    if (!game.gamePaused) {
+        PFont font3 = createFont("calibri.ttf", 30);
+        textFont(font3);
+        text(views[5].text+ game.getTimeLeft(), 250, 150);
+    }
+  }
+  
+  else if (currentView == 6) {
+    // texts
+    game.draw();
+    PFont font1 = createFont("calibri.ttf", 30);
+    textFont(font1);
+    fill(255,255,255);
+    text(views[6].title, 250, 100);
+    PFont font2 = createFont("calibri.ttf", 30);
+    textFont(font2);
+    text(views[6].title2 + game.getCurrentPlayer(), 600, 100);
+  }
+  
+  else if (currentView == 7) {
+    // texts
+    PFont font1 = createFont("calibri.ttf", 30);
+    textFont(font1);
+    fill(255,255,255);
+    text(views[7].title + game.getCurrentPlayer(), 250, 100);
+    PFont font2 = createFont("calibri.ttf", 30);
+    textFont(font2);
+    text(views[7].title2 + game.getCurrentPoints(), 600, 100);
   }
 }

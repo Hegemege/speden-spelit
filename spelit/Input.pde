@@ -5,22 +5,47 @@ void keyPressed() {
     if (currentView == 1) {
         if (keyCode == ENTER) {
             currentView++;
-            setupStarted = true; 
+          //  setupStarted = true; 
         }
-    }
-    if (programState == GlobalState.Setup && !setupStarted) {
+    } else if (currentView == 2) {
+      switch (key) {
+      case '1':
+          if (programState == GlobalState.Setup) {
+              playerCount = 1;
+          }
+          break;
+      case '2':
+          if (programState == GlobalState.Setup) {
+              playerCount = 2;
+          }
+          break;
+      case '3':
+          if (programState == GlobalState.Setup) {
+              playerCount = 3;
+          }
+          break;
+      case '4':
+          if (programState == GlobalState.Setup) {
+              playerCount = 4;
+          }
+          break;
+      }
+      currentView++;
+    } else if (currentView == 3) {
+      if (programState == GlobalState.Setup && playerCount != 0 && tPlayers.size() < playerCount) {
         if (keyCode == ENTER) {
-            setupStarted;
+          tPlayers.add(playerName);
+          playerName = "";
         }
-    } else if (programState == GlobalState.Setup && playerCount != 0 && tPlayers.size() < playerCount) {
-        if (keyCode == ENTER) {
-            tPlayers.add(playerName);
-            playerName = "";
-        } else if (keyCode == BACKSPACE) {
-            playerName = playerName.substring(0, max(playerName.length() - 1, 0));
-        } else if (keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT) {
-           playerName += key; 
+        else if (keyCode == BACKSPACE) {
+          playerName =  playerName.substring(0, max(playerName.length() - 1, 0));
         }
+        else if (keyCode != SHIFT && keyCode != CONTROL && keyCode != ALT) {
+          playerName += key; 
+        }
+      } else if (playerCount != 0 || skipPlayerSetup) {
+        setupDone = true;
+      }
     } else if (calibrationState == 4) {
       switch(keyCode) {
         case ENTER:
@@ -45,9 +70,11 @@ void keyPressed() {
                 //setupDone = true; // these skips are handled in booleans now (see spelit.pde)
             } else if (programState == GlobalState.Playing) {
                 if (game.gamePaused) {
+                    currentView = 5;
                     game.gamePaused = false;
                     game.playTurn();
                 } else {
+                    currentView = 6;
                     game.gamePaused = true;
                     game.seconds = 15;
                     game.changeTurn();
@@ -110,26 +137,6 @@ void keyPressed() {
                 if (calibrationState == 1 || calibrationState == 2) {
                     mirrored[calibrationState - 1] = !mirrored[calibrationState - 1];
                 }
-            }
-            break;
-        case '1':
-            if (programState == GlobalState.Setup) {
-                playerCount = 1;
-            }
-            break;
-        case '2':
-            if (programState == GlobalState.Setup) {
-                playerCount = 2;
-            }
-            break;
-        case '3':
-            if (programState == GlobalState.Setup) {
-                playerCount = 3;
-            }
-            break;
-        case '4':
-            if (programState == GlobalState.Setup) {
-                playerCount = 4;
             }
             break;
         case 'a':
