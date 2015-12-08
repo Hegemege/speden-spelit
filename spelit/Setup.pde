@@ -11,7 +11,7 @@ void setupPlayersDraw() {
         textSize(24);
         text("Enter name for player " + (tPlayers.size() + 1), 50, 50); 
         text(playerName, 50, 85); 
-    } else if (playerCount != 0) {
+    } else if (playerCount != 0 || skipPlayerSetup) {
         setupDone = true;
     } else {
         background(75);

@@ -13,6 +13,7 @@ GlobalState programState;
 
 boolean debug = true;
 boolean skipPinCalibration = true;
+boolean skipPlayerSetup = false;
 int pinCount = 5;
 ArrayList<String> tPlayers = new ArrayList<String>();
 ArrayList<Pin> pins = new ArrayList<Pin>();
@@ -27,15 +28,12 @@ void setup() {
     size(640, 480);
 
     // Other variables are initialized in calibrate() in Calibrate.pde
-    // DEBUG: remove these when inter
-  /*  if (debug) {
-        ArrayList<String> tPlayers = new ArrayList<String>();
+    if (skipPlayerSetup) {
         tPlayers.add("Player 1");
         tPlayers.add("Player 2");
         tPlayers.add("Player 3");
         tPlayers.add("Player 4");
-        game = new Game(tPlayers);
-    }*/
+    }
 
 }
 
