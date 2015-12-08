@@ -31,6 +31,7 @@ int currentView;
 int prevView;
 color bgColor;
 color fontColor;
+PImage pinImage;
 
 // Main functions
 
@@ -47,6 +48,7 @@ void setup() {
         tPlayers.add("Player 4");
     }
     minim = new Minim(this);
+    pinImage = loadImage("pin.png");
    // player = minim.loadFile("spelit.mp3");
     basicSetup();
     createStartViews();

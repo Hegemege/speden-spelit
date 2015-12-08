@@ -126,7 +126,14 @@ class Game {
         } else {
             frontCam.draw();
         }
-
+        
+        for (int i = 0; i < pins.size(); i++)  {
+            if (!pins.get(i).hit) {
+                float x = frontCam.pinLocations.get(i).x;
+                float y = frontCam.pinLocations.get(i).y;
+                image(pinImage, x - 22, y - 120);
+            }
+        }
         
         if(!gamePaused && !timeOver) {
             int collisionIndex = colCam.detectCollision();
