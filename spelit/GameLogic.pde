@@ -38,7 +38,7 @@ class Game {
     }
     
     void playTurn() {
-        seconds = 1500;
+        seconds = 15;
         startCountdownTimer();
     }
     
@@ -102,11 +102,11 @@ class Game {
 
         fill(255);
         textSize(24);
-        if (!gamePaused) {
+       /* if (!gamePaused) {
            text("Current player: " + p.name + "    Points: " + p.points + "    Time left: " + seconds, 50, 50);
         } else {
             text("Current player: " + p.name + "    Points: " + p.points, 50, 50);
-        }
+        }*/
     }
 }
 

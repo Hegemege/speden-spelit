@@ -2,10 +2,17 @@
 String playerName = "";
 
 void keyPressed() {
-    switch (keyCode) {
-
+    if (currentView == 1) {
+        if (keyCode == ENTER) {
+            currentView++;
+            setupStarted = true; 
+        }
     }
-    if (programState == GlobalState.Setup && playerCount != 0 && tPlayers.size() < playerCount) {
+    if (programState == GlobalState.Setup && !setupStarted) {
+        if (keyCode == ENTER) {
+            setupStarted;
+        }
+    } else if (programState == GlobalState.Setup && playerCount != 0 && tPlayers.size() < playerCount) {
         if (keyCode == ENTER) {
             tPlayers.add(playerName);
             playerName = "";

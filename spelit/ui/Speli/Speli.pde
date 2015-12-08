@@ -47,7 +47,6 @@ void createViews() {
   
   // game over (points and did the player win) + replay
   views[6] = new View(6, bgColor, "Peli päättyy", "Pelaaja" + getCurrentPlayer() + "voitti");
-
 }
 
 void draw() {
