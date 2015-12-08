@@ -221,9 +221,9 @@ ArrayList<Capture> getCameras() {
     } else {
 
         for (int i = 0; i < cameras.length; i++) {
-          if(!cameras[i].contains("USB")) {
+         // if(!cameras[i].contains("USB")) {
             camResults.add( new CameraResult(cameras[i]) );
-          }
+         // }
         }
     }
 

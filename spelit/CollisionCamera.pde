@@ -88,7 +88,17 @@ class CollisionCamera {
     int detectCollision() {
         for (int n = 0; n < blobDetection.getBlobNb(); n++) {
             Blob b = blobDetection.getBlob(n);
-            if (b!=null) {
+            if (b!=null && sanityCheck(b)) {
+                //if (debug) {
+                    ellipseMode(CORNER);
+                    strokeWeight(10); //For debugging purposes
+                    fill(0,0,0,0);
+                    stroke(255,255,255); 
+                    ellipse(
+                    b.xMin*width,b.yMin*height,
+                    b.w*width,b.h*height
+                    );
+               // }
                 //TODO: tähän blobin sanity checkausta, esim jättimäiset blobit voi skipata
 
                 for (int i = 0; i < pinLocations.size(); i++) {
@@ -106,7 +116,7 @@ class CollisionCamera {
     void drawBlobs() {
         for (int n = 0; n < blobDetection.getBlobNb(); n++) {
             Blob b = blobDetection.getBlob(n);
-            if (b!=null) {
+            if (b!=null && sanityCheck(b)) {
                 ellipseMode(CORNER);
                 strokeWeight(10); 
                 fill(0,0,0,0);
@@ -120,5 +130,11 @@ class CollisionCamera {
             
         }
     }
-
+    
+    boolean sanityCheck(Blob b) {
+        if (b.w < 0.5*b.h || b.h < 0.5*b.w || b.h > 0.5) {
+           return false; 
+        }
+        return true;
+    }
 }

@@ -38,7 +38,7 @@ class Game {
     }
     
     void playTurn() {
-        seconds = 15;
+        seconds = 1500;
         startCountdownTimer();
     }
     
