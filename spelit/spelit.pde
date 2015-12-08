@@ -14,6 +14,7 @@ GlobalState programState;
 boolean debug = true;
 boolean skipPinCalibration = true;
 boolean skipPlayerSetup = false;
+boolean drawColCam = false;
 int pinCount = 5;
 ArrayList<String> tPlayers = new ArrayList<String>();
 ArrayList<Pin> pins = new ArrayList<Pin>();

@@ -61,16 +61,33 @@ class Game {
     void draw() {
         background(75);
         
-        
+        // Logic 
         Player p = getPlayerInTurn();
-        colCam.draw();
+        
         if(!gamePaused && !timeOver) {
             int collisionIndex = colCam.detectCollision();
             if (collisionIndex !=  - 1 && !pins.get(collisionIndex).hit) { 
                 p.points += 1;
                 pins.get(collisionIndex).hit = true;
             }
+        } else if (!gamePaused) {
+            //ran out of time, do something
         }
+
+
+        // Draw
+
+        if (drawColCam) {
+            colCam.draw();
+        } else {
+            frontCam.draw();
+        }
+
+
+        if (gamePaused) {
+            //draw some stuff
+        }
+
         fill(255);
         textSize(24);
         if (!gamePaused) {

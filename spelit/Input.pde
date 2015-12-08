@@ -33,9 +33,9 @@ void keyPressed() {
     switch (key) {
         case ' ': // TODO: implement properly
             if (programState == GlobalState.Calibrating) {
-                calibrationDone = true;
+                //calibrationDone = true; // these skips are handled in booleans now (see spelit.pde)
             } else if (programState == GlobalState.Setup) {
-                setupDone = true;
+                //setupDone = true; // these skips are handled in booleans now (see spelit.pde)
             } else if (programState == GlobalState.Playing) {
                 if (game.gamePaused) {
                     game.gamePaused = false;
