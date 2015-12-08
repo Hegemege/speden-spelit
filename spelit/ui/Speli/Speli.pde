@@ -43,10 +43,10 @@ void createViews() {
   views[4] = new View(4, bgColor, "Pelaaja: ", "Pisteet: ");
   
   // change player turns
-  views[5] = new View(5, bgColor, "Vuoro vaihtuu", "Pelaaja: ");
+  views[5] = new View(5, bgColor, "Vuoro vaihtuu", "Pelaaja: " + getCurrentPlayer());
   
   // game over (points and did the player win) + replay
-  views[6] = new View(6, bgColor, "Peli päättyy", "Pelaaja x voitti");
+  views[6] = new View(6, bgColor, "Peli päättyy", "Pelaaja" + getCurrentPlayer() + "voitti");
 
 }
 
@@ -73,15 +73,15 @@ void drawViews() {
     PFont font1 = createFont("calibri.ttf", 120);
     textFont(font1);
     fill(255,255,255);
-    text(views[0].title, 300, 325);
+    text(views[1].title, 300, 325);
     PFont font2 = createFont("calibri.ttf", 120);
     textFont(font2);
     fill(0,205,0);
-    text(views[0].title2, 550, 450);
+    text(views[1].title2, 550, 450);
     PFont font3 = createFont("calibri.ttf", 30);
     textFont(font3);
     fill(255,255,255);
-    text(views[0].text, 475, 600);
+    text(views[1].text, 475, 600);
   }
 
   else if (currentView == 2 || currentView == 3) {
@@ -89,14 +89,14 @@ void drawViews() {
     PFont font1 = createFont("calibri.ttf", 40);
     textFont(font1);
     fill(255,255,255);
-    text(views[1].title, 550, 100);
+    text(views[2].title, 550, 100);
     PFont font2 = createFont("calibri.ttf", 30);
     textFont(font2);
-    text(views[1].title2, 400, 250);
+    text(views[2].title2, 400, 250);
     if (currentView == 3) {
       PFont font3 = createFont("calibri.ttf", 30);
       textFont(font3);
-      text(views[1].text, 400, 350);
+      text(views[2].text, 400, 350);
     }
   }
   
@@ -107,10 +107,32 @@ void drawViews() {
     PFont font1 = createFont("calibri.ttf", 30);
     textFont(font1);
     fill(255,255,255);
-    text(views[3].title + getCurrentPlayer(), 250, 100);
+    text(views[4].title + getCurrentPlayer(), 250, 100);
     PFont font2 = createFont("calibri.ttf", 30);
     textFont(font2);
-    text(views[3].title2 + getCurrentPoints(), 600, 100);
+    text(views[4].title2 + getCurrentPoints(), 600, 100);
+  }
+  
+  else if (currentView == 5) {
+    // texts
+    PFont font1 = createFont("calibri.ttf", 30);
+    textFont(font1);
+    fill(255,255,255);
+    text(views[5].title + getCurrentPlayer(), 250, 100);
+    PFont font2 = createFont("calibri.ttf", 30);
+    textFont(font2);
+    text(views[5].title2 + getCurrentPoints(), 600, 100);
+  }
+  
+  else if (currentView == 6) {
+    // texts
+    PFont font1 = createFont("calibri.ttf", 30);
+    textFont(font1);
+    fill(255,255,255);
+    text(views[6].title + getCurrentPlayer(), 250, 100);
+    PFont font2 = createFont("calibri.ttf", 30);
+    textFont(font2);
+    text(views[6].title2 + getCurrentPoints(), 600, 100);
   }
 }
 
@@ -125,7 +147,13 @@ int getCurrentPoints() {
 }
 
 void keyPressed() {
-  if (currentView == 1) {
+  if (currentView == 0) {
+    if (keyCode == ENTER) {
+      currentView++;
+    }
+  }
+  
+  else if (currentView == 1) {
   //if (currentView < views.length - 1) {
     if (keyCode == ENTER) {
       currentView++;
@@ -174,7 +202,20 @@ void keyPressed() {
   }
   
   else if (currentView == 4) {
-    
+    if (keyCode == ENTER) {
+      currentView++;
+    }
+  }
+  
+  else if (currentView == 5) {
+  if (keyCode == ENTER) {
+      currentView++;
+    }}
+  
+  else if (currentView == 6) {
+    if (keyCode == ENTER) {
+      currentView++;
+    }
   }
   
 }
