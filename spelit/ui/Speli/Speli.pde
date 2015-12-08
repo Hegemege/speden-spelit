@@ -31,7 +31,7 @@ void basicSetup() {
 
 void createViews() {
   // calibration
-  views[0] = new View(0, colCam, frontCam, "title", "subtitle", "other content");
+  views[0] = new View(0, colCam, frontCam, "Kameroiden kalibrointi", "subtitle", "other content");
   
   // start view
   views[1] = new View(1, bgColor, "SPEDEN", "SPELIT", "Paina ENTER jatkaaksesi");
@@ -39,14 +39,17 @@ void createViews() {
   // add players
   views[2] = new View(2, bgColor, "Pelaajat", "Pelaajien määrä: ", "Pelaajien nimet: ");
   
+  // game begins, which player has their turn
+  views[4] = new View(4, bgColor, "Peli alkaa", "Pelaaja: " + getCurrentPlayer());
+  
   // game cam view
-  views[4] = new View(4, bgColor, "Pelaaja: ", "Pisteet: ");
+  views[5] = new View(5, bgColor, "Pelaaja: " + getCurrentPlayer(), "Pisteet: " + getCurrentPoints(), "Aikaa jäljellä: " + getTimeLeft());
   
   // change player turns
-  views[5] = new View(5, bgColor, "Vuoro vaihtuu", "Pelaaja: " + getCurrentPlayer());
+  views[6] = new View(6, bgColor, "Vuoro vaihtuu", "Pelaaja: " + getCurrentPlayer());
   
   // game over (points and did the player win) + replay
-  views[6] = new View(6, bgColor, "Peli päättyy", "Pelaaja" + getCurrentPlayer() + "voitti");
+  views[7] = new View(7, bgColor, "Peli päättyy", "Pelaaja" + getCurrentPlayer() + "voitti");
 
 }
 
@@ -144,6 +147,10 @@ String getCurrentPlayer() {
 int getCurrentPoints() {
   // return the points of the current player
   return -1;
+}
+
+String getTimeLeft() {
+  return "-99,99";
 }
 
 void keyPressed() {
