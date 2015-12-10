@@ -32,6 +32,7 @@ int prevView;
 color bgColor;
 color fontColor;
 PImage pinImage;
+PImage cupImage;
 
 // Main functions
 
@@ -49,6 +50,7 @@ void setup() {
     }
     minim = new Minim(this);
     pinImage = loadImage("pin.png");
+    cupImage = loadImage("cup.png");
    // player = minim.loadFile("spelit.mp3");
     basicSetup();
     createStartViews();
@@ -124,7 +126,7 @@ void createPlayViews() {
   views[6] = new View(6, bgColor, "Vuoro vaihtuu ", "Pelaaja: ");
   
   // game over (points and did the player win) + replay
-  views[7] = new View(7, bgColor, "Peli päättyy", "Pelaaja ", "Pisteillä ");
+  views[7] = new View(7, bgColor, "Peli päättyi!", "Pelaaja ", "Pisteet ");
 }
 
 void drawViews() {
@@ -184,6 +186,11 @@ void drawViews() {
             text(playerName, 650, 400+(i*50));
         }
       }
+      if (tPlayers.size() == playerCount) {
+          PFont font4 = createFont("calibri.ttf", 30);
+          textFont(font4);
+          text("Paina ENTER aloittaaksesi pelin ja SPACE aloittaaksesi/vaihtaaksesi vuoroa", 160, 620);
+      }
     }
   }
   
@@ -223,15 +230,19 @@ void drawViews() {
   
   else if (currentView == 7) {
     // texts
-    PFont font1 = createFont("calibri.ttf", 30);
+    PFont font1 = createFont("calibri.ttf", 40);
     textFont(font1);
     fill(255,255,255);
-    text(views[7].title, 250, 100);
+    text(views[7].title, 530, 100);
     PFont font2 = createFont("calibri.ttf", 30);
     textFont(font2);
-    text(views[7].title2 + game.getTopPlayer() +  " voitti", 400, 100);
+    text(views[7].title2 + game.getTopPlayer() +  " voitti!", 380, 200);
     PFont font3 = createFont("calibri.ttf", 30);
     textFont(font3);
-    text(views[7].text + game.getCurrentPoints(), 600, 100);
+    text(views[7].text + game.getCurrentPoints(), 730, 200);
+    image(cupImage, 515, 300);
+    PFont font4 = createFont("calibri.ttf", 30);
+    textFont(font4);
+    text("Paina ENTER uutta ottelua varten, SPACE palataksesi pelaajien valintaan", 200, 620);
   }
 }

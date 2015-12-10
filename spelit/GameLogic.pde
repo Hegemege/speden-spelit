@@ -71,6 +71,14 @@ class Game {
       }
     }
     
+    void newGame() {
+       for (int i = 0; i < players.size(); i++) {
+          players.get(i).points = 0;
+          turnCount = 0;
+          currentView = 5;
+       }
+    }
+    
     String getCurrentPlayer() {
   // return the name of the current player
         return players.get(turn).name;

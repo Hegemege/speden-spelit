@@ -12,25 +12,28 @@ void keyPressed() {
       case '1':
           if (programState == GlobalState.Setup) {
               playerCount = 1;
+              currentView++;
           }
           break;
       case '2':
           if (programState == GlobalState.Setup) {
               playerCount = 2;
+              currentView++;
           }
           break;
       case '3':
           if (programState == GlobalState.Setup) {
               playerCount = 3;
+              currentView++;
           }
           break;
       case '4':
           if (programState == GlobalState.Setup) {
               playerCount = 4;
+              currentView++;
           }
           break;
       }
-      currentView++;
     } else if (currentView == 3) {
       if (programState == GlobalState.Setup && playerCount != 0 && tPlayers.size() < playerCount) {
         if (keyCode == ENTER) {
@@ -46,6 +49,19 @@ void keyPressed() {
       } else if (playerCount != 0 || skipPlayerSetup) {
         setupDone = true;
       }
+    } else if (currentView == 7) {
+        if (keyCode == ENTER) {
+           game.newGame(); 
+        } else if (key == ' ') {
+          setupDone = false;
+          programState = GlobalState.Setup;
+          currentView = 1;
+          playerCount = 0;
+          turnCount = 0;
+          for (int i = tPlayers.size() - 1; i >= 0; i--) {
+              tPlayers.remove(i);
+          }
+        }
     } else if (calibrationState == 4) {
       switch(keyCode) {
         case ENTER:
