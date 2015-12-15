@@ -18,8 +18,8 @@ boolean debug = true;
 boolean skipPinCalibration = false;
 boolean skipPlayerSetup = false;
 boolean drawColCam = false;
-boolean drawBlobOutline = true;
-boolean drawDebugPins = true;
+boolean drawBlobOutline = false;
+boolean drawDebugPins = false;
 int pinCount = 5;
 ArrayList<String> tPlayers = new ArrayList<String>();
 ArrayList<Pin> pins = new ArrayList<Pin>();
@@ -62,7 +62,7 @@ void basicSetup() {
   prevView = -1;
   views = new View[8];
 
-  bgColor = color(203,204,204,1);
+  bgColor = color(75,75,75,1);
   fontColor = color(255,255,255,1);
   
   // set cameras
